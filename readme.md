@@ -14,6 +14,9 @@ Falcor provides asynchronous getters for client-side use, in the form of promise
 Angular 1.x templates can't bind directly to promises, so this lib mainly solves the problem of providing synchronous getters into Falcor that Angular can bind to.
 This lib also provides getter/setter functions for use in two-way binding scenarios.
 
+**Note:** that this lib is pre-1.0.
+Pending any feedback and/or lessons learned it may change substantially before hitting 1.0.
+
 ## Usage
 
 ```js
@@ -53,3 +56,7 @@ Also, there are options:
 <button ng-click="ngf.call('users.create')"/>
 <checkbox ng-model="ngf.twoWay('users.u12345.isOnline')" ng-model-options="{ getterSetter: true }"/>
 ```
+
+## Credit
+
+Credit due to the [Falcor](https://netflix.github.io/falcor/) and [Angular](https://angularjs.org/) teams of course, and to [@rolaveric](https://github.com/rolaveric/angular-falcor) for inspiration and providing some useful pieces to this puzzle!
