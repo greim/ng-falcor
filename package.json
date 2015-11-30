@@ -1,0 +1,35 @@
+{
+  "name": "ng-falcor",
+  "version": "0.0.0",
+  "description": "Use Falcor in Angular 1.x Projects",
+  "main": "lib/index.js",
+  "dependencies": {
+    "falcor": "^0.1.14",
+    "falcor-http-datasource": "^0.1.2",
+    "falcor-path-syntax": "^0.2.4"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.2.0",
+    "babel-core": "^6.2.1",
+    "babel-eslint": "^4.1.6",
+    "babel-preset-es2015": "^6.1.18",
+    "eslint": "^1.10.2",
+    "mocha": "^2.3.4",
+    "uglify-js": "^2.6.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:greim/ng-falcor.git"
+  },
+  "scripts": {
+    "test": "mocha --compilers js:babel-core/register",
+    "compile": "./bin/compile.sh",
+    "prepublish": "npm run compile"
+  },
+  "keywords": [
+    "angular",
+    "falcor"
+  ],
+  "author": "",
+  "license": "MIT"
+}

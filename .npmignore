@@ -1,0 +1,7 @@
+/test/
+/src/
+/bin/
+/build/
+/dist/
+.gitignore
+.eslintrc
