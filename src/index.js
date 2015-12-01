@@ -3,8 +3,11 @@
 import { Model } from 'falcor';
 import HttpDataSource from 'falcor-http-datasource';
 import extract from './extract';
-import { fromPath as parse } from 'falcor-path-syntax';
+import pathSyntax from 'falcor-path-syntax';
 import thenify from './thenify';
+import memoize from './memoize';
+
+const parse = memoize(pathSyntax.fromPath);
 
 function create({ router, cache }) {
 
@@ -23,8 +26,12 @@ function create({ router, cache }) {
     const graph = model._root.cache;
 
     // This is the singleton created by the factory.
-    const ngf = function(...args) {
-      const path = args.length > 1 ? args : parse(args[0]);
+    const ngf = function(path) {
+      if (arguments.length > 1) {
+        path = Array.from(arguments);
+      } else if (typeof path === 'string') {
+        path = parse(path);
+      }
       const result = extract(graph, path);
       if (result === undefined) {
         ngf.getValue(path);
