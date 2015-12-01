@@ -25,7 +25,7 @@ Pending any feedback and/or lessons learned it may change substantially before h
 The main export of `ng-falcor` has but one method `create()` which returns an Angular factory function.
 Pass it an options hash:
 
- * **router** (string) If provided, a new `falcor.HttpDataSource` is created using this and added to the model.
+ * **router** (string) If provided, a new [`falcor.HttpDataSource`](https://netflix.github.io/falcor/documentation/datasources.html) is created using this and added to the model.
  * **cache** (object) Pre-populate the model cache. Useful for bootstrapping data for example.
 
 ### `ngf`
