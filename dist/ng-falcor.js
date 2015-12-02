@@ -91,11 +91,8 @@ function create(_ref) {
       } else if (typeof path === 'string') {
         path = parse(path);
       }
-      var result = (0, _extract2.default)(graph, path);
-      if (result === undefined) {
-        ngf.getValue(path);
-      }
-      return result;
+      ngf.getValue(path);
+      return (0, _extract2.default)(graph, path);
     };
 
     // Re-expose model methods to all consumers.

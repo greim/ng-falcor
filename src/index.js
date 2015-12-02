@@ -37,11 +37,8 @@ function create({
       } else if (typeof path === 'string') {
         path = parse(path);
       }
-      const result = extract(graph, path);
-      if (result === undefined) {
-        ngf.getValue(path);
-      }
-      return result;
+      ngf.getValue(path);
+      return extract(graph, path);
     };
 
     // Re-expose model methods to all consumers.
