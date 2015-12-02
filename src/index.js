@@ -9,7 +9,12 @@ import memoize from './memoize';
 
 const parse = memoize(pathSyntax.fromPath);
 
-function create({ router, cache }) {
+function create({
+  router,
+  timeout,
+  headers,
+  cache
+}) {
 
   function factory($rootScope) {
 
@@ -17,7 +22,7 @@ function create({ router, cache }) {
     const onChange = () => { $rootScope.$evalAsync(); };
 
     // This syncs the model to the server-side Falcor router.
-    const source = router && new HttpDataSource(router);
+    const source = router && new HttpDataSource(router, { timeout, headers });
 
     // Central cache of data shared by all ngf consumers.
     const model = new Model({ source, onChange, cache }).batch(); // de-bounces router fetches

@@ -26,6 +26,8 @@ The main export of `ng-falcor` has but one method `create()` which returns an An
 Pass it an options hash:
 
  * **router** (string) If provided, a new [`falcor.HttpDataSource`](https://netflix.github.io/falcor/documentation/datasources.html) is created using this and added to the model.
+ * **headers** (object) An object containing HTTP request headers. If provided, the falcor HttpDatasource will send these headers along with every request.
+ * **timeout** (number) If provided, falcor HttpDatasource requests will timeout after this many milliseconds.
  * **cache** (object) Pre-populate the model cache. Useful for bootstrapping data for example.
 
 ### `ngf`

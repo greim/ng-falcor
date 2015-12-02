@@ -64,6 +64,8 @@ var parse = (0, _memoize2.default)(_falcorPathSyntax2.default.fromPath);
 
 function create(_ref) {
   var router = _ref.router;
+  var timeout = _ref.timeout;
+  var headers = _ref.headers;
   var cache = _ref.cache;
 
   function factory($rootScope) {
@@ -74,7 +76,7 @@ function create(_ref) {
     };
 
     // This syncs the model to the server-side Falcor router.
-    var source = router && new _falcorHttpDatasource2.default(router);
+    var source = router && new _falcorHttpDatasource2.default(router, { timeout: timeout, headers: headers });
 
     // Central cache of data shared by all ngf consumers.
     var model = new _falcor.Model({ source: source, onChange: onChange, cache: cache }).batch(); // de-bounces router fetches
