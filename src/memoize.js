@@ -1,14 +1,13 @@
 // See mit-license.txt for license info
 
 export default function(fn) {
-  const cache = new Map();
+  const cache = Object.create(null);
   return function(arg) {
-    if (cache.has(arg)) {
-      return cache.get(arg);
-    } else {
-      const value = fn.call(this, arg);
-      cache.set(arg, value);
-      return value;
+    let result = cache[arg];
+    if (result === undefined) {
+      result = fn.call(this, arg);
+      cache[arg] = result;
     }
+    return result;
   };
 }
