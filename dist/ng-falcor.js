@@ -131,15 +131,14 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 exports.default = function (fn) {
-  var cache = new Map();
+  var cache = Object.create(null);
   return function (arg) {
-    if (cache.has(arg)) {
-      return cache.get(arg);
-    } else {
-      var value = fn.call(this, arg);
-      cache.set(arg, value);
-      return value;
+    var result = cache[arg];
+    if (result === undefined) {
+      result = fn.call(this, arg);
+      cache[arg] = result;
     }
+    return result;
   };
 };
 },{}],4:[function(require,module,exports){
@@ -159,9 +158,9 @@ exports.default = function (fn) {
 
 function noop() {} // See mit-license.txt for license info
 
-// Falcor promises apparently don't execute until you call
+// Falcor ModelResult objs don't execute until you call
 // then(). Hence this helper function since sometimes we
-// want the execution while discarding the promise.
+// want the execution without calling then().
 },{}],5:[function(require,module,exports){
 "use strict";
 
