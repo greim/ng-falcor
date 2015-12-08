@@ -11,9 +11,9 @@ Alternatively, copy the [UMD](https://github.com/umdjs/umd) file `dist/ng-falcor
 ## How does it work?
 
 See the [Falcor website](https://netflix.github.io/falcor/) for how Falcor works.
-This lib provide an Angular factory that wraps Falcor and exposes it to your logic and templates.
+This lib provides an Angular factory that wraps Falcor and exposes it to your logic and templates.
 Subsequently, Angular bindings operate against a single source of truth; a central Falcor model containing all your application data.
-From then on, it's simply a matter of manipulating the JSON graph.
+From then on, it's simply a matter of manipulating the JSON graph via the model.
 
 **Note:** this lib is pre-1.0.
 Pending any feedback and/or lessons learned it may change substantially before hitting 1.0.
@@ -36,7 +36,7 @@ This is the singleton object that gets injected into your controllers by the fac
 You can name it whatever you want, but `ngf` is nice and short.
 It has several methods:
 
- * `ngf('path.to.something')` or `ngf('path','to','something')` - Synchronous getter for one-way binding. May trigger a call to the datasource as a side effect.
+ * `ngf('path.to.something')` or `ngf('path','to','something')` - Synchronous getter for one-way binding. Will trigger a router request as a side effect the value isn't found in the model.
  * `ngf.twoWay(path)` - Returns a function that serves as an `ng-model` in a two-way binding scenario. Must be used in conjunction with `ng-model-options="{getterSetter:true}"`. This should only be used in save-as-you-type / save-as-you-click type of scenarios.
  * `ngf.get(...args)` - Alias to [`get(...args)`](https://netflix.github.io/falcor/doc/Model.html#get) on the internal Falcor model.
  * `ngf.getValue(...args)` - Alias to [`getValue(...args)`](https://netflix.github.io/falcor/doc/Model.html) on the internal Falcor model.
