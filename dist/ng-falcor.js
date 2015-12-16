@@ -84,16 +84,27 @@ function create(_ref) {
     // Extract values from this for synchronous reads.
     var graph = model._root.cache;
 
-    // This is the singleton created by the factory.
+    // Retrieve a value. Path must reference a single node in the graph.
     var ngf = pathify(function (path) {
       ngf.getValue(path);
       return (0, _extract2.default)(graph, path);
     });
 
-    // Helper method to make client code more intentional.
-    ngf.has = pathify(function (path) {
-      var result = (0, _extract2.default)(graph, path);
-      return result !== undefined;
+    // Iterate a sequence. Last path step must be a range over integers.
+    ngf.range = pathify(function (path) {
+      var _path$pop = path.pop();
+
+      var from = _path$pop.from;
+      var to = _path$pop.to;
+
+      var result = [];
+      for (var i = from; i <= to; i++) {
+        var item = ngf(path.concat([i]));
+        if (item) {
+          result.push(item);
+        }
+      }
+      return result;
     });
 
     // Re-expose model methods to all consumers.
