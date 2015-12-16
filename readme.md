@@ -37,7 +37,6 @@ You can name it whatever you want, but `ngf` is nice and short.
 It has several methods:
 
  * `ngf('path.to.something')` or `ngf('path', 'to', 'something')` - Synchronous getter. Will trigger a router request as a side effect the value isn't found in the model. The provided path must point to a leaf node in the graph.
- * `ngf.range('path.to[0..19]')` or `ngf.range('path', 'to', {from:0,to:19})` - Synchronous getter for a range. Returns an array of all found paths. The final step of the provided path must be a range over integers (inclusive).
  * `ngf.twoWay(path)` - Returns a function that serves as an `ng-model` in a two-way binding scenario. Must be used in conjunction with `ng-model-options="{getterSetter:true}"`. This should only be used in save-as-you-type / save-as-you-click type of scenarios.
  * `ngf.get(...args)` - Alias to [`get(...args)`](https://netflix.github.io/falcor/doc/Model.html#get) on the internal Falcor model.
  * `ngf.getValue(...args)` - Alias to [`getValue(...args)`](https://netflix.github.io/falcor/doc/Model.html) on the internal Falcor model.
