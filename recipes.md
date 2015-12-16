@@ -6,16 +6,16 @@ They'll likely evolve as time goes on.
 
 ## Detail Page
 
-A detail page could be a user profile page for example.
-It would typically have a userstate identifier (taken from the URL) used to lookup the item in question.
+A detail page would typically have a userstate identifier (taken from the client's URL) used to lookup the item in question.
 We'll explore these scenarios:
 
-```
-/users/greim (user profile)
-/products/a194dc72fa1 (product detail)
-```
-
 ### User Profile
+
+Client URL:
+
+```
+/users/greim
+```
 
 The JSON graph would be:
 
@@ -45,6 +45,12 @@ Template would look like this.
 ```
 
 ### Product Detail
+
+Client URL:
+
+```
+/products/a4dc628fa9e5
+```
 
 The JSON graph would be:
 
