@@ -90,23 +90,6 @@ function create(_ref) {
       return (0, _extract2.default)(graph, path);
     });
 
-    // Iterate a sequence. Last path step must be a range over integers.
-    ngf.range = pathify(function (path) {
-      var _path$pop = path.pop();
-
-      var from = _path$pop.from;
-      var to = _path$pop.to;
-
-      var result = [];
-      for (var i = from; i <= to; i++) {
-        var item = ngf(path.concat([i]));
-        if (item) {
-          result.push(item);
-        }
-      }
-      return result;
-    });
-
     // Re-expose model methods to all consumers.
     ngf.get = (0, _thenify2.default)(model.get.bind(model));
     ngf.getValue = (0, _thenify2.default)(model.getValue.bind(model));
