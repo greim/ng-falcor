@@ -85,21 +85,16 @@ function create(_ref) {
     var graph = model._root.cache;
 
     // This is the singleton created by the factory.
-    var ngf = function ngf(path) {
-      if (arguments.length > 1) {
-        path = Array.from(arguments);
-      } else if (typeof path === 'string') {
-        path = parse(path);
-      }
+    var ngf = pathify(function (path) {
       ngf.getValue(path);
       return (0, _extract2.default)(graph, path);
-    };
+    });
 
     // Helper method to make client code more intentional.
-    ngf.has = function () {
-      var result = ngf.apply(this, arguments);
+    ngf.has = pathify(function (path) {
+      var result = (0, _extract2.default)(graph, path);
       return result !== undefined;
-    };
+    });
 
     // Re-expose model methods to all consumers.
     ngf.get = (0, _thenify2.default)(model.get.bind(model));
@@ -126,6 +121,17 @@ function create(_ref) {
 
   factory.$inject = ['$rootScope'];
   return factory;
+}
+
+function pathify(cb) {
+  return function (path) {
+    if (arguments.length > 1) {
+      path = Array.from(arguments);
+    } else if (typeof path === 'string') {
+      path = parse(path);
+    }
+    return cb.call(this, path);
+  };
 }
 
 exports.create = create;
