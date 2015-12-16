@@ -49,7 +49,7 @@ Template would look like this.
 The JSON graph would be:
 
 ```
-productsById
+products
 |--a194dc72fa1: { ... }
 |--84a46ce8f9a: { ... }
 `--...
@@ -68,8 +68,8 @@ Template would look like this.
 
 ```html
 <div>
-  <span>Name: {{ ngf('productsById', id, 'name') }}</span>
-  <span>Price: {{ ngf('productsById', id, 'price') | currency }}</span>
+  <span>Name: {{ ngf('products', id, 'name') }}</span>
+  <span>Price: {{ ngf('products', id, 'price') | currency }}</span>
 </div>
 ```
 
