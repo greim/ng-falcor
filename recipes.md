@@ -36,7 +36,7 @@ function($scope, ngf) {
 
   $scope.indices = function() {
     var result = [];
-    for (var i=offset; i<offset + step; i++) {
+    for (var i=offset; i<offset+step; i++) {
       result.push(i);
     }
     return result;
@@ -61,12 +61,16 @@ function($scope, ngf) {
     return offset - step > 0;
   }
 
-  $scope.goNext = function(n) {
-    return offset += step;
+  $scope.pageNext = function(n) {
+    offset += step;
   }
 
-  $scope.goPrev = function(n) {
-    return offset -= step;
+  $scope.pagePrev = function(n) {
+    offset -= step;
+  }
+
+  $scope.pageTo = function(pageIdx) {
+    offset = pageIdx * step;
   }
 
   scope.ngf = ngf;
@@ -84,13 +88,13 @@ Finally comes the template, where everything comes together.
   </li>
 </ul>
 
-<button ng-click="goPrev()"
+<button ng-click="pagePrev()"
         ng-disabled="!hasPrev()">&lt;</button>
 
 <button ng-repeat="pageIndex in pages()"
         ng-click="pageTo(pageIndex)">{{pageIndex + 1}}</button>
 
-<button ng-click="goNext()"
+<button ng-click="pageNext()"
         ng-disabled="!hasNext()">&gt;</button>
 ```
 
