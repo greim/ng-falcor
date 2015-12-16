@@ -31,21 +31,16 @@ function create({
     const graph = model._root.cache;
 
     // This is the singleton created by the factory.
-    const ngf = function(path) {
-      if (arguments.length > 1) {
-        path = Array.from(arguments);
-      } else if (typeof path === 'string') {
-        path = parse(path);
-      }
+    const ngf = pathify(function(path) {
       ngf.getValue(path);
       return extract(graph, path);
-    };
+    });
 
     // Helper method to make client code more intentional.
-    ngf.has = function() {
-      const result = ngf.apply(this, arguments);
+    ngf.has = pathify(function(path) {
+      const result = extract(graph, path);
       return result !== undefined;
-    };
+    });
 
     // Re-expose model methods to all consumers.
     ngf.get = thenify(model.get.bind(model));
@@ -72,6 +67,17 @@ function create({
 
   factory.$inject = ['$rootScope'];
   return factory;
+}
+
+function pathify(cb) {
+  return function(path) {
+    if (arguments.length > 1) {
+      path = Array.from(arguments);
+    } else if (typeof path === 'string') {
+      path = parse(path);
+    }
+    return cb.call(this, path);
+  };
 }
 
 export { create };
