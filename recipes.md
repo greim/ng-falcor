@@ -7,7 +7,7 @@ They'll likely evolve as time goes on.
 ## Detail Page
 
 A detail page could be a user profile page for example.
-It would typically have a userstade identifier (taken from the URL) used to lookup the item in question.
+It would typically have a userstate identifier (taken from the URL) used to lookup the item in question.
 We'll explore these scenarios:
 
 ```
