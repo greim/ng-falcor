@@ -170,8 +170,8 @@ If sorted by popularity, order may change arbitrarily over time.
 
 Anchored infinite scrolling addresses the concern for recency-sorted lists by anchoring pagepoints to dates.
 For example, consider a list sorted by newest first.
-A load more request would be anchored to a max date determined by the oldest item in the previous call, or current time if no calls are yet made.
-This prevents dupes from shifting in next pages of results.
+A load more request would be anchored to a maxdate determined by the oldest item in the previous call, or current time if no calls are yet made.
+This prevents dupes from shifting into next pages of results.
 
 For anchored pagination, we need a JSON graph like this:
 
