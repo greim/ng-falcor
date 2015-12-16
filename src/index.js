@@ -36,19 +36,6 @@ function create({
       return extract(graph, path);
     });
 
-    // Iterate a sequence. Last path step must be a range over integers.
-    ngf.range = pathify(function(path) {
-      const { from, to } = path.pop();
-      const result = [];
-      for (let i=from; i<=to; i++) {
-        const item = ngf(path.concat([i]));
-        if (item) {
-          result.push(item);
-        }
-      }
-      return result;
-    });
-
     // Re-expose model methods to all consumers.
     ngf.get = thenify(model.get.bind(model));
     ngf.getValue = thenify(model.getValue.bind(model));
