@@ -11,18 +11,18 @@ We'll explore these scenarios:
 
 ### User Profile
 
-Client URL:
+Client URL route:
 
 ```
-/users/greim
+/users/:username
 ```
 
 The JSON graph would be:
 
 ```
 usersByUsername
-|--greim: $ref
 |--anne1979: $ref
+|--greim: $ref
 `--...
 ```
 
@@ -46,10 +46,10 @@ Template would look like this.
 
 ### Product Detail
 
-Client URL:
+Client URL route:
 
 ```
-/products/a4dc628fa9e5
+/products/:productId
 ```
 
 The JSON graph would be:
