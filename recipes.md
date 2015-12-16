@@ -1,4 +1,7 @@
-# How to handle various common things with ng-falcor
+# Recipes
+
+AKA, how to handle various common scenarios with ng-falcor.
+(These recipes are likely to change as I gain experience doing this.)
 
 ## Pagination
 
@@ -71,9 +74,11 @@ function($scope, ngf) {
 
 Finally comes the template, where everything comes together.
 
-```
+```html
 <ul>
-  <li ng-repeat="idx in indices()" ng-if="idx < ngf('things.length')" ng-show="ngf('things', idx, 'id')">
+  <li ng-repeat="idx in indices()"
+      ng-if="idx < ngf('things.length')"
+      ng-show="ngf('things', idx, 'id')">
     <span>Foo: {{ ngf('things', idx, 'foo') }}</span>
     <span>Bar: {{ ngf('things', idx, 'bar') }}</span>
   </li>
@@ -81,7 +86,8 @@ Finally comes the template, where everything comes together.
 
 <button ng-click="goPrev()" ng-disabled="!hasPrev()">&lt;</button>
 
-<button ng-repeat="pageIndex in pages()" ng-click="pageTo(pageIndex)">{{pageIndex + 1}}</button>
+<button ng-repeat="pageIndex in pages()"
+        ng-click="pageTo(pageIndex)">{{pageIndex + 1}}</button>
 
 <button ng-click="goNext()" ng-disabled="!hasNext()">&gt;</button>
 ```
@@ -128,15 +134,18 @@ function($scope, ngf) {
 
 Finally, the template.
 
-```
+```html
 <ul>
-  <li ng-repeat="idx in indices()" ng-if="idx < ngf('things.length')" ng-show="ngf('things', idx, 'id')">
+  <li ng-repeat="idx in indices()"
+      ng-if="idx < ngf('things.length')"
+      ng-show="ngf('things', idx, 'id')">
     <span>Foo: {{ ngf('things', idx, 'foo') }}</span>
     <span>Bar: {{ ngf('things', idx, 'bar') }}</span>
   </li>
 </ul>
 
-<button ng-click="loadMore()" ng-disabled="!hasMore()">Load More</button>
+<button ng-click="loadMore()"
+        ng-disabled="!hasMore()">Load More</button>
 ```
 
 ## Anchored Infinite Scrolling
@@ -202,13 +211,15 @@ function($scope, ngf) {
 
 Finally, the template.
 
-```
+```html
 <ul ng-repeat="maxDate in maxDates">
-  <li ng-repeat="idx in indices()" ng-show="ngf('thingsByMaxDate', maxDate, idx, 'id')">
+  <li ng-repeat="idx in indices()"
+      ng-show="ngf('thingsByMaxDate', maxDate, idx, 'id')">
     <span>Foo: {{ ngf('thingsByMaxDate', maxDate, idx, 'foo') }}</span>
     <span>Bar: {{ ngf('thingsByMaxDate', maxDate, idx, 'bar') }}</span>
   </li>
 </ul>
 
-<button ng-click="loadMore()" ng-disabled="!hasMore()">Show More</button>
+<button ng-click="loadMore()"
+        ng-disabled="!hasMore()">Show More</button>
 ```
