@@ -1,15 +1,16 @@
 # Recipes
 
 AKA, how to handle various common scenarios with ng-falcor.
-(These recipes are likely to change as I gain experience doing this.)
+These recipes aren't authoritative, just the current state of my thinking on how to do this stuff.
+They'll likely evolve as time goes on.
 
 ## Pagination
 
 When building a pagination UI, we need the following information:
 
- * The items, indexed by sequential integers
+ * Items indexed by sequential integers
  * Total count of available items
- * Step, AKA how many items to display per page
+ * Step. AKA how many items to display per page
  * Offset into the list to start viewing
 
 The items and total count are server-provided, while step and offset are userstate.
@@ -99,14 +100,26 @@ Finally comes the template, where everything comes together.
 Infinite scrolling requires a load more button positioned below the list, which when activated appends to the list.
 To do infinite scrolling, we need this information:
 
- * The items, indexed by sequential integers
+ * Items indexed by sequential integers
  * Total count of available items
- * Step, AKA how many items to append when loading more
+ * Step. AKA how many items to append when loading more
  * Amount of items being displayed (grows as you scroll)
 
 The items and total count are server-provided, while step and amount are userstate.
-As you can see, this is similar to pagination.
-The JSON graph is identical, while the controller looks like this:
+This is very similar to pagination.
+The JSON graph looks like this:
+
+```
+things
+|--0: $ref
+|--1: $ref
+|--2: $ref
+|--...
+|--N: $ref
+`--count: 120
+```
+
+The controller looks like this:
 
 ```js
 function($scope, ngf) {
@@ -228,4 +241,3 @@ Finally, the template.
 
 One caveat to this is with the `var size = 20` bit, which is hard-coded and non-DRY between client and server.
 I'm exploring ways around this currently.
- 
