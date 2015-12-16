@@ -4,6 +4,75 @@ AKA, how to handle various common scenarios with ng-falcor.
 These recipes aren't authoritative, just the current state of my thinking on how to do this stuff.
 They'll likely evolve as time goes on.
 
+## Detail Page
+
+A detail page could be a user profile page for example.
+It would typically have a userstade identifier (taken from the URL) used to lookup the item in question.
+We'll explore these scenarios:
+
+```
+/users/greim (user profile)
+/products/a194dc72fa1 (product detail)
+```
+
+### User Profile
+
+The JSON graph would be:
+
+```
+usersByUsername
+|--greim: $ref
+|--anne1979: $ref
+`--...
+```
+
+Controller would look something like this:
+
+```js
+function($scope, ngf, $stateParams) {
+  $scope.username = $stateParams.username;
+  $scope.ngf = ngf;
+}
+```
+
+Template would look like this.
+
+```html
+<div>
+  <span>First name: {{ ngf('usersByUsername', username, 'first_name') }}</span>
+  <span>Last name: {{ ngf('usersByUsername', username, 'last_name') }}</span>
+</div>
+```
+
+### Product Detail
+
+The JSON graph would be:
+
+```
+productsById
+|--a194dc72fa1: { ... }
+|--84a46ce8f9a: { ... }
+`--...
+```
+
+Controller would look something like this:
+
+```js
+function($scope, ngf, $stateParams) {
+  $scope.id = $stateParams.productId;
+  $scope.ngf = ngf;
+}
+```
+
+Template would look like this.
+
+```html
+<div>
+  <span>Name: {{ ngf('productsById', id, 'name') }}</span>
+  <span>Price: {{ ngf('productsById', id, 'price') | currency }}</span>
+</div>
+```
+
 ## Pagination
 
 When building a pagination UI, we need the following information:
@@ -73,7 +142,7 @@ function($scope, ngf) {
     offset = pageIdx * step;
   }
 
-  scope.ngf = ngf;
+  $scope.ngf = ngf;
 }
 ```
 
@@ -146,7 +215,7 @@ function($scope, ngf) {
     return amount + 1 < ngf('things.length');
   }
 
-  scope.ngf = ngf;
+  $scope.ngf = ngf;
 }
 ```
 
