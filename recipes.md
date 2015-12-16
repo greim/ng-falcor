@@ -84,12 +84,14 @@ Finally comes the template, where everything comes together.
   </li>
 </ul>
 
-<button ng-click="goPrev()" ng-disabled="!hasPrev()">&lt;</button>
+<button ng-click="goPrev()"
+        ng-disabled="!hasPrev()">&lt;</button>
 
 <button ng-repeat="pageIndex in pages()"
         ng-click="pageTo(pageIndex)">{{pageIndex + 1}}</button>
 
-<button ng-click="goNext()" ng-disabled="!hasNext()">&gt;</button>
+<button ng-click="goNext()"
+        ng-disabled="!hasNext()">&gt;</button>
 ```
 
 ## Naive Infinite Scrolling
@@ -223,3 +225,7 @@ Finally, the template.
 <button ng-click="loadMore()"
         ng-disabled="!hasMore()">Show More</button>
 ```
+
+One caveat to this is with the `var size = 20` bit, which is hard-coded and non-DRY between client and server.
+I'm exploring ways around this currently.
+ 
