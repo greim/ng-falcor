@@ -143,7 +143,7 @@ function($scope, ngf) {
   }
 
   $scope.hasMore = function() {
-    return amount + step < ngf('things.length');
+    return amount + 1 < ngf('things.length');
   }
 
   scope.ngf = ngf;
