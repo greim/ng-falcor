@@ -36,8 +36,8 @@ This is the singleton object that gets injected into your controllers by the fac
 You can name it whatever you want, but `ngf` is nice and short.
 It has several methods:
 
- * `ngf('path.to.something')` or `ngf('path','to','something')` - Synchronous getter for one-way binding. Will trigger a router request as a side effect the value isn't found in the model.
- * `ngf.has('path.to.something')` or `ngf.has('path','to','something')` - Returns false if the value is `undefined` within the graph, true otherwise. This is a helper so code can be written to read intentionally. For example you may only want to display `ngf('users', id, 'name')` if `ngf.has('users', id)`. Note that unlike the above this method *only* polls the graph, it doesn't trigger LRU updates or data fetches as a side effect.
+ * `ngf('path.to.something')` or `ngf('path','to','something')` - Synchronous getter for one-way binding. Will trigger a router request as a side effect the value isn't found in the model. The provided path must point to a leaf node in the graph.
+ * `ngf.has('path.to.something')` or `ngf.has('path','to','something')` - Returns false if the value is `undefined` within the graph, true otherwise. This is a helper so code can be written to read intentionally. For example you may only want to display `ngf('users', id, 'name')` if `ngf.has('users', id)`. Note that unlike the above, the provided `path` can point to a branch node. Also, it *only* polls the graph, it doesn't trigger LRU updates or data fetches as a side effect.
  * `ngf.twoWay(path)` - Returns a function that serves as an `ng-model` in a two-way binding scenario. Must be used in conjunction with `ng-model-options="{getterSetter:true}"`. This should only be used in save-as-you-type / save-as-you-click type of scenarios.
  * `ngf.get(...args)` - Alias to [`get(...args)`](https://netflix.github.io/falcor/doc/Model.html#get) on the internal Falcor model.
  * `ngf.getValue(...args)` - Alias to [`getValue(...args)`](https://netflix.github.io/falcor/doc/Model.html) on the internal Falcor model.
