@@ -41,6 +41,12 @@ function create({
       return extract(graph, path);
     };
 
+    // Helper method to make client code more intentional.
+    ngf.has = function() {
+      const result = ngf.apply(this, arguments);
+      return result !== undefined;
+    };
+
     // Re-expose model methods to all consumers.
     ngf.get = thenify(model.get.bind(model));
     ngf.getValue = thenify(model.getValue.bind(model));

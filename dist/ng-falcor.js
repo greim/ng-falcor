@@ -95,6 +95,12 @@ function create(_ref) {
       return (0, _extract2.default)(graph, path);
     };
 
+    // Helper method to make client code more intentional.
+    ngf.has = function () {
+      var result = ngf.apply(this, arguments);
+      return result !== undefined;
+    };
+
     // Re-expose model methods to all consumers.
     ngf.get = (0, _thenify2.default)(model.get.bind(model));
     ngf.getValue = (0, _thenify2.default)(model.getValue.bind(model));
