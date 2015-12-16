@@ -128,11 +128,11 @@ The controller looks like this:
 function($scope, ngf) {
 
   var step = 20;
-  var amount = 0;
+  var amount = step;
 
   $scope.indices = function() {
     var result = [];
-    for (var i=offset; i<offset + step; i++) {
+    for (var i=0; i<amount; i++) {
       result.push(i);
     }
     return result;
