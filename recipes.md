@@ -78,7 +78,6 @@ Finally comes the template, where everything comes together.
 ```html
 <ul>
   <li ng-repeat="idx in indices()"
-      ng-if="idx < ngf('things.length')"
       ng-show="ngf('things', idx, 'id')">
     <span>Foo: {{ ngf('things', idx, 'foo') }}</span>
     <span>Bar: {{ ngf('things', idx, 'bar') }}</span>
@@ -152,7 +151,6 @@ Finally, the template.
 ```html
 <ul>
   <li ng-repeat="idx in indices()"
-      ng-if="idx < ngf('things.length')"
       ng-show="ngf('things', idx, 'id')">
     <span>Foo: {{ ngf('things', idx, 'foo') }}</span>
     <span>Bar: {{ ngf('things', idx, 'bar') }}</span>
