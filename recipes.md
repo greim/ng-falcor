@@ -103,9 +103,7 @@ JSON graph:
 things
 |--0: $ref
 |--1: $ref
-|--2: $ref
 |--...
-|--N: $ref
 `--count: 120
 ```
 
@@ -201,7 +199,6 @@ thingsByIndex
 |--0: $ref(thingsById/...)
 |--1: $ref(thingsById/...)
 |--...
-|--N: $ref(thingsById/...)
 `--count: 120
 thingsById
 |--a57b4ec3: { ... }
@@ -270,8 +267,7 @@ thingsByMaxDate
 |--2015-12-16T21:43:55.737Z
 |  |--0: $ref(thingsById/...)
 |  |--1: $ref(thingsById/...)
-|  |--...
-|  `--N: $ref(thingsById/...)
+|  `--...
 |--2015-12-15T20:12:21.863Z
 |  `--...
 `--...
@@ -354,8 +350,7 @@ usersById
 |     |--count: 113
 |     |--0: $ref(usersById/...)
 |     |--1: $ref(usersById/...)
-|     |--...
-|     `--N: $ref(usersById/...)
+|     `--...
 `--...
 ```
 
@@ -389,7 +384,7 @@ function($scope, ngf, $stateParams) {
 }
 ```
 
-Finally, the template.
+Template:
 
 ```html
 <h2>{{ ngf('usersById', userId, 'first_name') }}'s Followers</h2>
