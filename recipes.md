@@ -43,6 +43,7 @@ function($scope, ngf, $stateParams) {
 Template:
 
 ```html
+<h2>{{ ngf('usersByUsername', username, 'first_name') }}'s Profile</h2>
 <div>
   <span>First name: {{ ngf('usersByUsername', username, 'first_name') }}</span>
   <span>Last name: {{ ngf('usersByUsername', username, 'last_name') }}</span>
@@ -78,6 +79,7 @@ function($scope, ngf, $stateParams) {
 Template:
 
 ```html
+<h2>Product Detail</h2>
 <div>
   <span>Name: {{ ngf('productsById', id, 'name') }}</span>
   <span>Price: {{ ngf('productsById', id, 'price') | currency }}</span>
@@ -390,6 +392,7 @@ function($scope, ngf, $stateParams) {
 Finally, the template.
 
 ```html
+<h2>{{ ngf('usersById', userId, 'first_name') }}'s Followers</h2>
 <ul>
   <li ng-repeat="idx in indices()"
       ng-show="ngf('usersById', userId, 'followers', idx, 'id')">
