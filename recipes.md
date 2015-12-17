@@ -101,10 +101,10 @@ JSON graph:
 
 ```
 things
+|--count: 120
 |--0: $ref
 |--1: $ref
-|--...
-`--count: 120
+`--...
 ```
 
 Controller:
@@ -196,10 +196,10 @@ JSON graph:
 
 ```
 thingsByIndex
+|--count: 120
 |--0: $ref(thingsById/...)
 |--1: $ref(thingsById/...)
-|--...
-`--count: 120
+`--...
 thingsById
 |--a57b4ec3: { ... }
 `--...
