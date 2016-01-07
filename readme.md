@@ -62,7 +62,7 @@ angular.module('foo', [])
 ```html
 <img src="{{ ngf('users.u12345.avatar.src') }}"/>
 <button ng-click="ngf.set('users.u12345.isOnline', true)"/>
-<button ng-click="ngf.doCall('users.create')"/>
+<button ng-click="ngf.callModel('users.create')"/>
 <checkbox ng-model="ngf.twoWay('users.u12345.isOnline')" ng-model-options="{ getterSetter: true }"/>
 ```
 
