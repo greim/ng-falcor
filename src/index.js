@@ -38,12 +38,12 @@ function create({
 
     // proxy the model on this object
     ngf.model = {};
-    for (const { srcName, destName } of [
-      { srcName: 'get', destName: 'get' },
-      { srcName: 'getValue', destName: 'getValue' },
-      { srcName: 'set', destName: 'set' },
-      { srcName: 'call', destName: 'doCall' },
-      { srcName: 'invalidate', destName: 'invalidate' }
+    for (const [ srcName, destName ] of [
+      [ 'get', 'get' ],
+      [ 'getValue', 'getValue' ],
+      [ 'set', 'set' ],
+      [ 'call', 'callModel' ],
+      [ 'invalidate', 'invalidate' ]
     ]) {
       let fn = model[srcName];
       fn = fn.bind(model);
