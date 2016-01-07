@@ -11,8 +11,8 @@ Alternatively, copy the [UMD](https://github.com/umdjs/umd) file `dist/ng-falcor
 ## How does it work?
 
 See the [Falcor website](https://netflix.github.io/falcor/) for how Falcor works.
-This lib provides an Angular factory that wraps Falcor and exposes it to your logic and templates.
-Subsequently, Angular bindings operate against a single source of truth; a central Falcor model containing all your application data.
+This lib provides an Angular factory that wraps a Falcor model and exposes it to your logic and templates.
+Subsequently, Angular bindings operate against a single source of truth consisting of a Falcor model containing all your application data.
 From then on, it's simply a matter of manipulating the JSON graph via the model.
 
 **Note:** this lib is pre-1.0.
@@ -36,12 +36,13 @@ This is the singleton object that gets injected into your controllers by the fac
 You can name it whatever you want, but `ngf` is nice and short.
 It has several methods:
 
- * `ngf('path.to.something')` or `ngf('path', 'to', 'something')` - Synchronous getter. Will trigger a router request as a side effect the value isn't found in the model. The provided path must point to a leaf node in the graph.
- * `ngf.twoWay(path)` - Returns a function that serves as an `ng-model` in a two-way binding scenario. Must be used in conjunction with `ng-model-options="{getterSetter:true}"`. This should only be used in save-as-you-type / save-as-you-click type of scenarios.
+ * `ngf('path.to.something')` or `ngf('path', 'to', 'something')` - Synchronous getter. Will trigger a router request as a side effect if the value isn't found in the model. As usual with Falcor, the provided path must point to a leaf node in the graph.
+ * `ngf.twoWay(path)` - Returns a function that serves as an `ng-model` in a two-way binding scenario. Must be used in conjunction with `ng-model-options="{getterSetter:true}"`. Be aware this will send `set` requests to your Falcor model as the user interacts with the bound element.
  * `ngf.get(...args)` - Alias to [`get(...args)`](https://netflix.github.io/falcor/doc/Model.html#get) on the internal Falcor model.
  * `ngf.getValue(...args)` - Alias to [`getValue(...args)`](https://netflix.github.io/falcor/doc/Model.html) on the internal Falcor model.
  * `ngf.set(...args)` - Alias to [`set(...args)`](https://netflix.github.io/falcor/doc/Model.html#set) on the internal Falcor model.
- * `ngf.call(...args)` - Alias to [`call(...args)`](https://netflix.github.io/falcor/doc/Model.html#call) on the internal Falcor model.
+ * `ngf.doCall(...args)` - Alias to [`call(...args)`](https://netflix.github.io/falcor/doc/Model.html#call) on the internal Falcor model. (Renamed to not collide with JS's `Function#call`.)
+ * `ngf.invalidate(...args)` - Alias to [`invalidate(...args)`](https://netflix.github.io/falcor/doc/Model.html#call) on the internal Falcor model.
 
 ## Example
 
@@ -61,7 +62,7 @@ angular.module('foo', [])
 ```html
 <img src="{{ ngf('users.u12345.avatar.src') }}"/>
 <button ng-click="ngf.set('users.u12345.isOnline', true)"/>
-<button ng-click="ngf.call('users.create')"/>
+<button ng-click="ngf.doCall('users.create')"/>
 <checkbox ng-model="ngf.twoWay('users.u12345.isOnline')" ng-model-options="{ getterSetter: true }"/>
 ```
 

@@ -14,7 +14,7 @@ function create({
   timeout,
   headers,
   cache
-}) {
+} = {}) {
 
   function factory($rootScope) {
 
@@ -32,23 +32,32 @@ function create({
 
     // Retrieve a value. Path must reference a single node in the graph.
     const ngf = pathify(function(path) {
-      ngf.getValue(path);
+      model.getValue(path);
       return extract(graph, path);
     });
 
-    // Re-expose model methods to all consumers.
-    ngf.get = thenify(model.get.bind(model));
-    ngf.getValue = thenify(model.getValue.bind(model));
-    ngf.set = thenify(model.set.bind(model));
-    ngf.call = thenify(model.call.bind(model));
+    // proxy the model on this object
+    ngf.model = {};
+    for (const { srcName, destName } of [
+      { srcName: 'get', destName: 'get' },
+      { srcName: 'getValue', destName: 'getValue' },
+      { srcName: 'set', destName: 'set' },
+      { srcName: 'call', destName: 'doCall' },
+      { srcName: 'invalidate', destName: 'invalidate' }
+    ]) {
+      let fn = model[srcName];
+      fn = fn.bind(model);
+      fn = thenify(fn);
+      ngf[destName] = fn;
+    }
 
     // Two-way binding helper.
     ngf.twoWay = function(path) {
       path = parse(path);
-      return function(newValue) {
+      return function(value) {
         const isSet = arguments.length > 0;
         if (isSet) {
-          ngf.setValue(path, newValue);
+          ngf.set({ path, value });
         } else {
           return extract(graph, path);
         }

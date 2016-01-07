@@ -6,7 +6,9 @@
 export default function(fn) {
   return function() {
     const prom = fn.apply(null, arguments);
-    prom.then(noop);
+    if (prom && typeof prom.then === 'function') {
+      prom.then(noop);
+    }
     return prom;
   };
 }

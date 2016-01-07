@@ -1,10 +1,10 @@
 {
   "name": "ng-falcor",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Use Falcor in Angular 1.x Projects",
   "main": "lib/index.js",
   "dependencies": {
-    "falcor": "^0.1.14",
+    "falcor": "^0.1.15",
     "falcor-http-datasource": "^0.1.2",
     "falcor-path-syntax": "^0.2.4"
   },
