@@ -63,12 +63,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var parse = (0, _memoize2.default)(_falcorPathSyntax2.default.fromPath);
 
 function create() {
-  var _ref = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-
-  var router = _ref.router;
-  var timeout = _ref.timeout;
-  var headers = _ref.headers;
-  var cache = _ref.cache;
+  var opts = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
   function factory($rootScope) {
 
@@ -78,13 +73,13 @@ function create() {
     };
 
     // This syncs the model to the server-side Falcor router.
-    var source = router && new _falcorHttpDatasource2.default(router, { timeout: timeout, headers: headers });
+    var source = undefined;
 
     // Central cache of data shared by all ngf consumers.
-    var model = new _falcor.Model({ source: source, onChange: onChange, cache: cache }).batch(); // de-bounces router fetches
+    var model = undefined;
 
     // Extract values from this for synchronous reads.
-    var graph = model._root.cache;
+    var graph = undefined;
 
     // Retrieve a value. Path must reference a single node in the graph.
     var ngf = pathify(function (path) {
@@ -92,19 +87,40 @@ function create() {
       return (0, _extract2.default)(graph, path);
     });
 
+    ngf.configure = function () {
+      var _ref = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
+      var router = _ref.router;
+      var timeout = _ref.timeout;
+      var headers = _ref.headers;
+      var cache = _ref.cache;
+
+      source = router && new _falcorHttpDatasource2.default(router, { timeout: timeout, headers: headers });
+      model = new _falcor.Model({ source: source, onChange: onChange, cache: cache }).batch();
+      graph = model._root.cache;
+      $rootScope.$evalAsync();
+    };
+
+    ngf.configure(opts);
+
     // proxy the model on this object
-    ngf.model = {};
     var _arr = [['get', 'get'], ['getValue', 'getValue'], ['set', 'set'], ['call', 'callModel'], ['invalidate', 'invalidate']];
-    for (var _i = 0; _i < _arr.length; _i++) {
+
+    var _loop = function _loop() {
       var _arr$_i = _slicedToArray(_arr[_i], 2);
 
       var srcName = _arr$_i[0];
       var destName = _arr$_i[1];
 
-      var fn = model[srcName];
-      fn = fn.bind(model);
-      fn = (0, _thenify2.default)(fn);
-      ngf[destName] = fn;
+      ngf[destName] = (0, _thenify2.default)(function () {
+        var _model;
+
+        return (_model = model)[srcName].apply(_model, arguments);
+      });
+    };
+
+    for (var _i = 0; _i < _arr.length; _i++) {
+      _loop();
     }
 
     // Two-way binding helper.
