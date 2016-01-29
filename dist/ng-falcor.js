@@ -90,10 +90,14 @@ function create() {
     ngf.configure = function () {
       var _ref = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
-      var router = _ref.router;
-      var timeout = _ref.timeout;
-      var headers = _ref.headers;
-      var cache = _ref.cache;
+      var _ref$router = _ref.router;
+      var router = _ref$router === undefined ? opts.router : _ref$router;
+      var _ref$timeout = _ref.timeout;
+      var timeout = _ref$timeout === undefined ? opts.timeout : _ref$timeout;
+      var _ref$headers = _ref.headers;
+      var headers = _ref$headers === undefined ? opts.headers : _ref$headers;
+      var _ref$cache = _ref.cache;
+      var cache = _ref$cache === undefined ? opts.cache : _ref$cache;
 
       source = router && new _falcorHttpDatasource2.default(router, { timeout: timeout, headers: headers });
       model = new _falcor.Model({ source: source, onChange: onChange, cache: cache }).batch();

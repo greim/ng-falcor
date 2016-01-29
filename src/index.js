@@ -32,10 +32,10 @@ function create(opts = {}) {
     });
 
     ngf.configure = function({
-      router,
-      timeout,
-      headers,
-      cache
+      router = opts.router,
+      timeout = opts.timeout,
+      headers = opts.headers,
+      cache = opts.cache
     } = {}) {
       source = router && new HttpDataSource(router, { timeout, headers });
       model = new Model({ source, onChange, cache }).batch();
