@@ -42,7 +42,7 @@ It has several methods:
  * `ngf.getValue(...args)` - Alias to [`getValue(...args)`](https://netflix.github.io/falcor/doc/Model.html) on the internal Falcor model.
  * `ngf.set(...args)` - Alias to [`set(...args)`](https://netflix.github.io/falcor/doc/Model.html#set) on the internal Falcor model.
  * `ngf.callModel(...args)` - Alias to [`call(...args)`](https://netflix.github.io/falcor/doc/Model.html#call) on the internal Falcor model (named `callModel` to avoid colliding with JS's `Function#call`).
- * `ngf.invalidate(...args)` - Alias to [`invalidate(...args)`](https://netflix.github.io/falcor/doc/Model.html#call) on the internal Falcor model.
+ * `ngf.invalidate(...args)` - Alias to [`invalidate(...args)`](https://netflix.github.io/falcor/doc/Model.html#invalidate) on the internal Falcor model.
 
 ## Example
 
