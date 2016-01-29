@@ -9,12 +9,7 @@ import memoize from './memoize';
 
 const parse = memoize(pathSyntax.fromPath);
 
-function create({
-  router,
-  timeout,
-  headers,
-  cache
-} = {}) {
+function create(opts = {}) {
 
   function factory($rootScope) {
 
@@ -22,13 +17,13 @@ function create({
     const onChange = () => { $rootScope.$evalAsync(); };
 
     // This syncs the model to the server-side Falcor router.
-    const source = router && new HttpDataSource(router, { timeout, headers });
+    let source;
 
     // Central cache of data shared by all ngf consumers.
-    const model = new Model({ source, onChange, cache }).batch(); // de-bounces router fetches
+    let model;
 
     // Extract values from this for synchronous reads.
-    const graph = model._root.cache;
+    let graph;
 
     // Retrieve a value. Path must reference a single node in the graph.
     const ngf = pathify(function(path) {
@@ -36,8 +31,21 @@ function create({
       return extract(graph, path);
     });
 
+    ngf.configure = function({
+      router,
+      timeout,
+      headers,
+      cache
+    } = {}) {
+      source = router && new HttpDataSource(router, { timeout, headers });
+      model = new Model({ source, onChange, cache }).batch();
+      graph = model._root.cache;
+      $rootScope.$evalAsync();
+    };
+
+    ngf.configure(opts);
+
     // proxy the model on this object
-    ngf.model = {};
     for (const [ srcName, destName ] of [
       [ 'get', 'get' ],
       [ 'getValue', 'getValue' ],
@@ -45,10 +53,9 @@ function create({
       [ 'call', 'callModel' ],
       [ 'invalidate', 'invalidate' ]
     ]) {
-      let fn = model[srcName];
-      fn = fn.bind(model);
-      fn = thenify(fn);
-      ngf[destName] = fn;
+      ngf[destName] = thenify(function(...args) {
+        return model[srcName](...args);
+      });
     }
 
     // Two-way binding helper.

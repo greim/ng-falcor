@@ -35,26 +35,26 @@ describe('ng-falcor', () => {
 
     it('should be a function', () => {
       const factory = create({});
-      const ngf = factory();
+      const ngf = factory($rootScope);
       assert.strictEqual(typeof ngf, 'function');
     });
 
     it('getValue should be a function', () => {
       const factory = create({});
-      const ngf = factory();
+      const ngf = factory($rootScope);
       assert.strictEqual(typeof ngf.getValue, 'function');
     });
 
     it('getValue should return a thenable', () => {
       const factory = create({});
-      const ngf = factory();
+      const ngf = factory($rootScope);
       const thenable = ngf.getValue(['foo']);
       assert.strictEqual(typeof thenable.then, 'function');
     });
 
     it('should return undefined at first', () => {
       const factory = create({});
-      const ngf = factory();
+      const ngf = factory($rootScope);
       const val = ngf('foo');
       assert.strictEqual(val, undefined);
     });
@@ -168,6 +168,12 @@ describe('ng-falcor', () => {
       tw('baz');
       val = tw();
       assert.strictEqual(val, 'baz');
+    });
+
+    it('should configure', () => {
+      const factory = create();
+      const ngf = factory($rootScope);
+      ngf.configure();
     });
   });
 });
