@@ -26,8 +26,9 @@ function create(opts = {}) {
     let graph;
 
     // Retrieve a value. Path must reference a single node in the graph.
+    var thcb = () => {};
     const ngf = pathify(function(path) {
-      model.getValue(path);
+      model.getValue(path).then(thcb);
       return extract(graph, path);
     });
 

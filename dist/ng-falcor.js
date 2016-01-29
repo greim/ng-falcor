@@ -82,8 +82,9 @@ function create() {
     var graph = undefined;
 
     // Retrieve a value. Path must reference a single node in the graph.
+    var thcb = function thcb() {};
     var ngf = pathify(function (path) {
-      model.getValue(path);
+      model.getValue(path).then(thcb);
       return (0, _extract2.default)(graph, path);
     });
 
