@@ -91,4 +91,4 @@ function pathify(cb) {
   };
 }
 
-export { create };
+module.exports = { create };
