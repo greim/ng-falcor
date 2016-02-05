@@ -2,6 +2,7 @@
 
 /* eslint-env mocha */
 
+import ngFalcor from '../src';
 import { create } from '../src';
 import assert from 'assert';
 
@@ -10,6 +11,17 @@ var $rootScope = {
 };
 
 describe('ng-falcor', () => {
+
+  describe('importing', () => {
+
+    it('should import both in CJS and ES6', () => {
+      const cjsModule = require('../src');
+      assert.strictEqual(ngFalcor, cjsModule);
+      assert.strictEqual(ngFalcor.create, cjsModule.create);
+      assert.strictEqual(create, cjsModule.create);
+      assert.strictEqual(typeof ngFalcor.create, 'function');
+    });
+  });
 
   describe('create', () => {
 
