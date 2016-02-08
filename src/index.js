@@ -52,7 +52,9 @@ function create(opts = {}) {
       [ 'getValue', 'getValue' ],
       [ 'set', 'set' ],
       [ 'call', 'callModel' ],
-      [ 'invalidate', 'invalidate' ]
+      [ 'invalidate', 'invalidate' ], 
+      ['withoutDataSource', 'withoutDataSource'], 
+      ['getCache', 'getCache']
     ]) {
       ngf[destName] = thenify(function(...args) {
         return model[srcName](...args);
