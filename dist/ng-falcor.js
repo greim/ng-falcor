@@ -104,7 +104,7 @@ function create() {
     ngf.configure(opts);
 
     // proxy the model on this object
-    var _arr = [['get', 'get'], ['getValue', 'getValue'], ['set', 'set'], ['call', 'callModel'], ['invalidate', 'invalidate']];
+    var _arr = [['get', 'get'], ['getValue', 'getValue'], ['set', 'set'], ['call', 'callModel'], ['invalidate', 'invalidate'], ['withoutDataSource', 'withoutDataSource'], ['getCache', 'getCache']];
 
     var _loop = function _loop() {
       var _arr$_i = _slicedToArray(_arr[_i], 2);

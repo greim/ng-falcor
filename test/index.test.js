@@ -141,6 +141,23 @@ describe('ng-falcor', () => {
         assert.strictEqual(val, 'bar');
       });
     });
+
+    it('should withoutDataSource', async function() {
+      const factory = create();
+      const ngf = factory($rootScope);
+      await ngf.set({ path: ['a'], value: 'b' });
+      assert.strictEqual(ngf('a'), 'b');
+      var m = ngf.withoutDataSource();
+      assert.strictEqual(await m.getValue(['a']), 'b');
+    });
+
+    it('should withoutDataSource share cache', async function() {
+      const factory = create();
+      const ngf = factory($rootScope);
+      var m = ngf.withoutDataSource();
+      await m.set({ path: ['c'], value: 'd' });
+      assert.strictEqual(ngf('c'), 'd');
+    });
   });
 
   describe('two-way binding', () => {
