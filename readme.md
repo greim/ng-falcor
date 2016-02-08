@@ -25,10 +25,11 @@ Pending any feedback and/or lessons learned it may change substantially before h
 The main export of `ng-falcor` has but one method `create()` which returns an Angular factory function.
 Pass it an options hash:
 
- * **router** (string) If provided, a new [`falcor.HttpDataSource`](https://netflix.github.io/falcor/documentation/datasources.html) is created using this and added to the model.
- * **headers** (object) An object containing HTTP request headers. If provided, the falcor HttpDatasource will send these headers along with every request.
- * **timeout** (number) If provided, falcor HttpDatasource requests will timeout after this many milliseconds.
- * **cache** (object) Pre-populate the model cache. Useful for bootstrapping data for example.
+ * **source** (DataSource) Any object that implements the Falcor [DataSource](http://netflix.github.io/falcor/doc/DataSource.html) convention.
+ * **router** (string) If provided, a new [`falcor.HttpDataSource`](https://netflix.github.io/falcor/documentation/datasources.html) is created using this and added to the model. This is an alternative to `source`.
+ * **headers** (object) An object containing HTTP request headers. If provided, the falcor HttpDatasource will send these headers along with every request. Only use in conjunction with `router`.
+ * **timeout** (number) If provided, falcor HttpDatasource requests will timeout after this many milliseconds. Only use in conjunction with `router`.
+ * **cache** (object) Pre-populate the model cache. Useful for bootstrapping data for example. Only use in conjunction with `router`.
 
 ### `ngf`
 

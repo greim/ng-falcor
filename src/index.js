@@ -33,12 +33,19 @@ function create(opts = {}) {
     });
 
     ngf.configure = function({
+      dataSource = opts.source,
       router = opts.router,
       timeout = opts.timeout,
       headers = opts.headers,
       cache = opts.cache
     } = {}) {
-      source = router && new HttpDataSource(router, { timeout, headers });
+      if (dataSource) {
+        source = dataSource;
+      } else if (router) {
+        source = new HttpDataSource(router, { timeout, headers });
+      } else {
+        source = undefined;
+      }
       model = new Model({ source, onChange, cache }).batch();
       graph = model._root.cache;
       $rootScope.$evalAsync();

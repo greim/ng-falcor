@@ -5,6 +5,7 @@
 import ngFalcor from '../src';
 import { create } from '../src';
 import assert from 'assert';
+import { Model } from 'falcor';
 
 var $rootScope = {
   $evalAsync() {}
@@ -151,12 +152,30 @@ describe('ng-falcor', () => {
       assert.strictEqual(await m.getValue(['a']), 'b');
     });
 
-    it('should withoutDataSource share cache', async function() {
-      const factory = create();
+    it('should use model as data source', async function() {
+      const model = new Model({
+        cache: { a: 'b' }
+      });
+      const source = model.asDataSource();
+      const factory = create({ source });
       const ngf = factory($rootScope);
-      var m = ngf.withoutDataSource();
-      await m.set({ path: ['c'], value: 'd' });
-      assert.strictEqual(ngf('c'), 'd');
+      assert.strictEqual(await ngf.getValue(['a']), 'b');
+    });
+
+    it('should not dupe calls to data source', async function() {
+      let count = 0;
+      const model = new Model({
+        cache: { a: 'b' }
+      });
+      const source = model.asDataSource();
+      source.call = function() {
+        count++;
+        return model.get('a'); // just need to return a modelresponse here.
+      };
+      const factory = create({ source });
+      const ngf = factory($rootScope);
+      await ngf.callModel('foo', ['a'], [], []);
+      assert.strictEqual(count, 1);
     });
   });
 

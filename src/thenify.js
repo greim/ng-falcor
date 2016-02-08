@@ -7,10 +7,10 @@ export default function(fn) {
   return function() {
     const prom = fn.apply(null, arguments);
     if (prom && typeof prom.then === 'function') {
-      prom.then(noop);
+      return prom.then(identity);
     }
     return prom;
   };
 }
 
-function noop() {}
+function identity(thing) { return thing; }
