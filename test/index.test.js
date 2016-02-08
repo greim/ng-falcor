@@ -177,6 +177,23 @@ describe('ng-falcor', () => {
       await ngf.callModel('foo', ['a'], [], []);
       assert.strictEqual(count, 1);
     });
+
+    // https://github.com/Netflix/falcor/issues/728
+    it.skip('should not dupe calls to data source (2)', async function() {
+      let count = 0;
+      const sourceModel = new Model({ cache: { a: 'b' } });
+      const source = sourceModel.asDataSource();
+      source.call = function() {
+        count++;
+        const fakeResp = sourceModel.get('a');
+        return fakeResp;
+      };
+      const model = new Model({ source });
+      const resp = model.call('foo', ['baz'], [], []);
+      await resp;
+      await resp;
+      assert.strictEqual(count, 1);
+    });
   });
 
   describe('two-way binding', () => {
