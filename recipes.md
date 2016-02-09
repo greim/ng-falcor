@@ -7,7 +7,7 @@ They'll likely evolve as time goes on.
 ## Detail Page
 
 A detail page displays a single item, such as a user, product, or post.
-It would typically have a userstate identifier taken from the client's URL, which is used to lookup the item in question.
+It would typically have an identifier taken from the client's URL, which is used to lookup the item in question.
 We'll explore two scenarios, user profile and product detail.
 
 ### User Profile
@@ -43,10 +43,10 @@ function($scope, ngf, $stateParams) {
 Template:
 
 ```html
-<h2>{{ ngf('usersByUsername', username, 'first_name') }}'s Profile</h2>
+<h2>{{ ngf(['usersByUsername', username, 'first_name']) }}'s Profile</h2>
 <div>
-  <span>First name: {{ ngf('usersByUsername', username, 'first_name') }}</span>
-  <span>Last name: {{ ngf('usersByUsername', username, 'last_name') }}</span>
+  <span>First name: {{ ngf(['usersByUsername', username, 'first_name']) }}</span>
+  <span>Last name: {{ ngf(['usersByUsername', username, 'last_name']) }}</span>
 </div>
 ```
 
@@ -81,8 +81,8 @@ Template:
 ```html
 <h2>Product Detail</h2>
 <div>
-  <span>Name: {{ ngf('productsById', id, 'name') }}</span>
-  <span>Price: {{ ngf('productsById', id, 'price') | currency }}</span>
+  <span>Name: {{ ngf(['productsById', id, 'name']) }}</span>
+  <span>Price: {{ ngf(['productsById', id, 'price']) | currency }}</span>
 </div>
 ```
 
@@ -125,7 +125,7 @@ function($scope, ngf) {
 
   $scope.pages = function() {
     var result = [];
-    var count = ngf('things.count');
+    var count = ngf(['things','count']);
     if (count !== undefined) {
       for (var i=offset; i<count; i+=pageCount) {
         result.push(Math.floor(i / pageCount));
@@ -135,7 +135,7 @@ function($scope, ngf) {
   }
 
   $scope.hasNext = function() {
-    return offset + pageCount < ngf('things.count');
+    return offset + pageCount < ngf(['things','count']);
   }
 
   $scope.hasPrev = function() {
@@ -163,9 +163,9 @@ Template:
 ```html
 <ul>
   <li ng-repeat="idx in indices()"
-      ng-show="ngf('things', idx, 'id')">
-    <span>Foo: {{ ngf('things', idx, 'foo') }}</span>
-    <span>Bar: {{ ngf('things', idx, 'bar') }}</span>
+      ng-show="ngf(['things', idx, 'id'])">
+    <span>Foo: {{ ngf(['things', idx, 'foo']) }}</span>
+    <span>Bar: {{ ngf(['things', idx, 'bar']) }}</span>
   </li>
 </ul>
 
@@ -226,7 +226,7 @@ function($scope, ngf) {
   }
 
   $scope.hasMore = function() {
-    return amount + 1 < ngf('thingsByIndex.count');
+    return amount + 1 < ngf(['thingsByIndex','count']);
   }
 
   $scope.ngf = ngf;
@@ -238,9 +238,9 @@ Finally, the template.
 ```html
 <ul>
   <li ng-repeat="idx in indices()"
-      ng-show="ngf('thingsByIndex', idx, 'id')">
-    <span>Foo: {{ ngf('thingsByIndex', idx, 'foo') }}</span>
-    <span>Bar: {{ ngf('thingsByIndex', idx, 'bar') }}</span>
+      ng-show="ngf(['thingsByIndex', idx, 'id'])">
+    <span>Foo: {{ ngf(['thingsByIndex', idx, 'foo']) }}</span>
+    <span>Bar: {{ ngf(['thingsByIndex', idx, 'bar']) }}</span>
   </li>
 </ul>
 
@@ -292,7 +292,7 @@ function($scope, ngf) {
 
   $scope.hasMore = function() {
     var earliest = getEarliest();
-    return ngf('thingsByMaxDate', earliest, 0, 'date');
+    return ngf(['thingsByMaxDate', earliest, 0, 'date']);
   };
 
   $scope.indices = function() {
@@ -305,7 +305,7 @@ function($scope, ngf) {
 
   function getEarliest() {
     var lastMaxDate = $scope.maxDates[$scope.maxDates - 1];
-    var earliest = ngf('thingsByMaxDate', lastMaxDate, size - 1, 'date');
+    var earliest = ngf(['thingsByMaxDate', lastMaxDate, size - 1, 'date']);
     return earliest;
   }
 }
@@ -316,9 +316,9 @@ Template:
 ```html
 <ul ng-repeat="maxDate in maxDates">
   <li ng-repeat="idx in indices()"
-      ng-show="ngf('thingsByMaxDate', maxDate, idx, 'id')">
-    <span>Foo: {{ ngf('thingsByMaxDate', maxDate, idx, 'foo') }}</span>
-    <span>Bar: {{ ngf('thingsByMaxDate', maxDate, idx, 'bar') }}</span>
+      ng-show="ngf(['thingsByMaxDate', maxDate, idx, 'id'])">
+    <span>Foo: {{ ngf(['thingsByMaxDate', maxDate, idx, 'foo']) }}</span>
+    <span>Bar: {{ ngf(['thingsByMaxDate', maxDate, idx, 'bar']) }}</span>
   </li>
 </ul>
 
@@ -376,7 +376,7 @@ function($scope, ngf, $stateParams) {
   }
 
   $scope.hasMore = function() {
-    var count = ngf('usersById', userId, 'followers', 'count');
+    var count = ngf(['usersById', userId, 'followers', 'count']);
     return amount + 1 < count;
   }
 
@@ -387,17 +387,17 @@ function($scope, ngf, $stateParams) {
 Template:
 
 ```html
-<h2>{{ ngf('usersById', userId, 'first_name') }}'s Followers</h2>
+<h2>{{ ngf(['usersById', userId, 'first_name']) }}'s Followers</h2>
 <ul>
   <li ng-repeat="idx in indices()"
-      ng-show="ngf('usersById', userId, 'followers', idx, 'id')">
+      ng-show="ngf(['usersById', userId, 'followers', idx, 'id'])">
     <span>
       First name:
-      {{ ngf('usersById', userId, 'followers', idx, 'first_name') }}
+      {{ ngf(['usersById', userId, 'followers', idx, 'first_name']) }}
     </span>
     <span>
       Last name:
-      {{ ngf('usersById', userId, 'followers', idx, 'last_name') }}
+      {{ ngf(['usersById', userId, 'followers', idx, 'last_name']) }}
     </span>
   </li>
 </ul>

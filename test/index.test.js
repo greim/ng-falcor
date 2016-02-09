@@ -93,11 +93,11 @@ describe('ng-falcor', () => {
       assert.strictEqual(val, 1);
     });
 
-    it('should accept path strings', () => {
+    it('should not accept path strings', () => {
       const factory = create({ cache: { foo: { bar: 2 } } });
       const ngf = factory($rootScope);
       const val = ngf('foo.bar');
-      assert.strictEqual(val, 2);
+      assert.strictEqual(val, undefined);
     });
 
     it('should accept path args', () => {

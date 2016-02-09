@@ -2,10 +2,6 @@
 
 import SyncModel from 'falcor-sync-model';
 import HttpDataSource from 'falcor-http-datasource';
-import pathSyntax from 'falcor-path-syntax';
-import memoize from './memoize';
-
-const parse = memoize(pathSyntax.fromPath);
 
 function create(opts = {}) {
 
@@ -14,9 +10,6 @@ function create(opts = {}) {
     // Called whenever model changes.
     const onChange = () => { $rootScope.$evalAsync(); };
 
-    // This syncs the model to the server-side Falcor router.
-    let source;
-
     // Central cache of data shared by all ngf consumers.
     let model;
 
@@ -24,23 +17,29 @@ function create(opts = {}) {
     var thcb = () => {};
 
     // Retrieve a value. Path must reference a single node in the graph.
-    const ngf = pathify(function(path) {
+    const ngf = function(...path) {
+      path = pathify(path);
       return model.getValueSync(path);
-    });
+    };
 
-    ngf.configure = function({
-      dataSource = opts.source,
-      router = opts.router,
-      timeout = opts.timeout,
-      headers = opts.headers,
-      cache = opts.cache
-    } = {}) {
-      if (dataSource) {
-        source = dataSource;
-      } else if (router) {
+    ngf.reconfigure = function(newOpts = {}) {
+      const headers = Object.assign({}, opts.headers, newOpts.headers);
+      const cache = newOpts.cache || undefined;
+      let router, timeout, source;
+      if (newOpts.router !== undefined) { router = router || undefined; }
+      else { router = opts.router; }
+      if (newOpts.timeout !== undefined) { timeout = timeout || undefined; }
+      else { timeout = opts.timeout; }
+      if (newOpts.source !== undefined) { source = source || undefined; }
+      else { source = opts.source; }
+      const finalOpts = { headers, cache, router, timeout, source };
+      ngf.configure(finalOpts);
+    };
+
+    ngf.configure = function({ source, router, timeout, headers, cache } = {}) {
+      opts = arguments[0];
+      if (!source && router) {
         source = new HttpDataSource(router, { timeout, headers });
-      } else {
-        source = undefined;
       }
       model = new SyncModel({ source, onChange, cache }).batch();
       $rootScope.$evalAsync();
@@ -65,7 +64,7 @@ function create(opts = {}) {
 
     // Two-way binding helper.
     ngf.twoWay = function(path) {
-      path = parse(path);
+      path = pathify(path);
       return function(value) {
         const isSet = arguments.length > 0;
         if (isSet) {
@@ -84,15 +83,11 @@ function create(opts = {}) {
   return factory;
 }
 
-function pathify(cb) {
-  return function(path) {
-    if (arguments.length > 1) {
-      path = Array.from(arguments);
-    } else if (typeof path === 'string') {
-      path = parse(path);
-    }
-    return cb.call(this, path);
-  };
+function pathify(...path) {
+  if (Array.isArray(path[0])) {
+    path = path[0];
+  }
+  return path;
 }
 
 module.exports = { create };
