@@ -1,53 +1,19 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.ngFalcor = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = extract;
-// See mit-license.txt for license info
-
-// pull things out of a falcor graph, following
-// refs and unboxing values as necessary
-function extract(obj, path) {
-  var idx = arguments.length <= 2 || arguments[2] === undefined ? 0 : arguments[2];
-  var root = arguments.length <= 3 || arguments[3] === undefined ? obj : arguments[3];
-
-  var isRef = obj && obj.$type === 'ref';
-  if (isRef) {
-    var newPath = obj.value.concat(path.slice(idx));
-    return extract(root, newPath);
-  } else if (path.length - idx === 0) {
-    return obj && obj.$type ? obj.value : obj;
-  } else if (obj === null || obj === undefined) {
-    return obj;
-  } else {
-    var step = path[idx];
-    return extract(obj[step], path, idx + 1, root);
-  }
-}
-},{}],2:[function(require,module,exports){
-'use strict';
-
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }(); // See mit-license.txt for license info
 
-var _falcor = require('falcor');
+var _falcorSyncModel = require('falcor-sync-model');
+
+var _falcorSyncModel2 = _interopRequireDefault(_falcorSyncModel);
 
 var _falcorHttpDatasource = require('falcor-http-datasource');
 
 var _falcorHttpDatasource2 = _interopRequireDefault(_falcorHttpDatasource);
 
-var _extract = require('./extract');
-
-var _extract2 = _interopRequireDefault(_extract);
-
 var _falcorPathSyntax = require('falcor-path-syntax');
 
 var _falcorPathSyntax2 = _interopRequireDefault(_falcorPathSyntax);
-
-var _thenify = require('./thenify');
-
-var _thenify2 = _interopRequireDefault(_thenify);
 
 var _memoize = require('./memoize');
 
@@ -74,14 +40,12 @@ function create() {
     // Central cache of data shared by all ngf consumers.
     var model = undefined;
 
-    // Extract values from this for synchronous reads.
-    var graph = undefined;
+    // no-op callback since Falcor responses are lazy
+    var thcb = function thcb() {};
 
     // Retrieve a value. Path must reference a single node in the graph.
-    var thcb = function thcb() {};
     var ngf = pathify(function (path) {
-      model.getValue(path).then(thcb);
-      return (0, _extract2.default)(graph, path);
+      return model.getValueSync(path);
     });
 
     ngf.configure = function () {
@@ -105,8 +69,7 @@ function create() {
       } else {
         source = undefined;
       }
-      model = new _falcor.Model({ source: source, onChange: onChange, cache: cache }).batch();
-      graph = model._root.cache;
+      model = new _falcorSyncModel2.default({ source: source, onChange: onChange, cache: cache }).batch();
       $rootScope.$evalAsync();
     };
 
@@ -138,9 +101,9 @@ function create() {
       return function (value) {
         var isSet = arguments.length > 0;
         if (isSet) {
-          ngf.set({ path: path, value: value });
+          ngf.set({ path: path, value: value }).then(thcb);
         } else {
-          return (0, _extract2.default)(graph, path);
+          return model.getValueSync(path);
         }
       };
     };
@@ -165,7 +128,7 @@ function pathify(cb) {
 }
 
 module.exports = { create: create };
-},{"./extract":1,"./memoize":3,"./thenify":4,"falcor":51,"falcor-http-datasource":5,"falcor-path-syntax":13}],3:[function(require,module,exports){
+},{"./memoize":2,"falcor-http-datasource":3,"falcor-path-syntax":11,"falcor-sync-model":19}],2:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -183,31 +146,7 @@ exports.default = function (fn) {
     return result;
   };
 };
-},{}],4:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-exports.default = function (fn) {
-  return function () {
-    var prom = fn.apply(null, arguments);
-    if (prom && typeof prom.then === 'function') {
-      return prom.then(identity);
-    }
-    return prom;
-  };
-};
-
-function identity(thing) {
-  return thing;
-} // See mit-license.txt for license info
-
-// Falcor ModelResult objs don't execute until you call
-// then(). Hence this helper function since sometimes we
-// want the execution without calling then().
-},{}],5:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 'use strict';
 var request = require('./request');
 var buildQueryObject = require('./buildQueryObject');
@@ -308,7 +247,7 @@ XMLHttpSource['default'] = XMLHttpSource;
 // commonjs
 module.exports = XMLHttpSource;
 
-},{"./buildQueryObject":6,"./request":9}],6:[function(require,module,exports){
+},{"./buildQueryObject":4,"./request":7}],4:[function(require,module,exports){
 'use strict';
 module.exports = function buildQueryObject(url, method, queryData) {
   var qData = [];
@@ -337,7 +276,7 @@ module.exports = function buildQueryObject(url, method, queryData) {
   return data;
 };
 
-},{}],7:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 (function (global){
 'use strict';
 // Get CORS support even for older IE
@@ -353,7 +292,7 @@ module.exports = function getCORSRequest() {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],8:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 (function (global){
 'use strict';
 module.exports = function getXMLHttpRequest() {
@@ -381,7 +320,7 @@ module.exports = function getXMLHttpRequest() {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],9:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 'use strict';
 var getXMLHttpRequest = require('./getXMLHttpRequest');
 var getCORSRequest = require('./getCORSRequest');
@@ -604,14 +543,14 @@ function onXhrError(observer, xhr, status, e) {
 
 module.exports = request;
 
-},{"./getCORSRequest":7,"./getXMLHttpRequest":8}],10:[function(require,module,exports){
+},{"./getCORSRequest":5,"./getXMLHttpRequest":6}],8:[function(require,module,exports){
 module.exports = {
     integers: 'integers',
     ranges: 'ranges',
     keys: 'keys'
 };
 
-},{}],11:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 var TokenTypes = {
     token: 'token',
     dotSeparator: '.',
@@ -629,7 +568,7 @@ var TokenTypes = {
 
 module.exports = TokenTypes;
 
-},{}],12:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 module.exports = {
     indexer: {
         nested: 'Indexers cannot be nested.',
@@ -663,7 +602,7 @@ module.exports = {
 };
 
 
-},{}],13:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 var Tokenizer = require('./tokenizer');
 var head = require('./parse-tree/head');
 var RoutedTokens = require('./RoutedTokens');
@@ -723,7 +662,7 @@ parser.fromPath = function(path, ext) {
 // Potential routed tokens.
 parser.RoutedTokens = RoutedTokens;
 
-},{"./RoutedTokens":10,"./parse-tree/head":14,"./tokenizer":19}],14:[function(require,module,exports){
+},{"./RoutedTokens":8,"./parse-tree/head":12,"./tokenizer":17}],12:[function(require,module,exports){
 var TokenTypes = require('./../TokenTypes');
 var E = require('./../exceptions');
 var indexer = require('./indexer');
@@ -784,7 +723,7 @@ module.exports = function head(tokenizer) {
 };
 
 
-},{"./../TokenTypes":11,"./../exceptions":12,"./indexer":15}],15:[function(require,module,exports){
+},{"./../TokenTypes":9,"./../exceptions":10,"./indexer":13}],13:[function(require,module,exports){
 var TokenTypes = require('./../TokenTypes');
 var E = require('./../exceptions');
 var idxE = E.indexer;
@@ -900,7 +839,7 @@ module.exports = function indexer(tokenizer, openingToken, state, out) {
 };
 
 
-},{"./../TokenTypes":11,"./../exceptions":12,"./quote":16,"./range":17,"./routed":18}],16:[function(require,module,exports){
+},{"./../TokenTypes":9,"./../exceptions":10,"./quote":14,"./range":15,"./routed":16}],14:[function(require,module,exports){
 var TokenTypes = require('./../TokenTypes');
 var E = require('./../exceptions');
 var quoteE = E.quote;
@@ -984,7 +923,7 @@ module.exports = function quote(tokenizer, openingToken, state, out) {
 };
 
 
-},{"./../TokenTypes":11,"./../exceptions":12}],17:[function(require,module,exports){
+},{"./../TokenTypes":9,"./../exceptions":10}],15:[function(require,module,exports){
 var Tokenizer = require('./../tokenizer');
 var TokenTypes = require('./../TokenTypes');
 var E = require('./../exceptions');
@@ -1063,7 +1002,7 @@ module.exports = function range(tokenizer, openingToken, state, out) {
 };
 
 
-},{"./../TokenTypes":11,"./../exceptions":12,"./../tokenizer":19}],18:[function(require,module,exports){
+},{"./../TokenTypes":9,"./../exceptions":10,"./../tokenizer":17}],16:[function(require,module,exports){
 var TokenTypes = require('./../TokenTypes');
 var RoutedTokens = require('./../RoutedTokens');
 var E = require('./../exceptions');
@@ -1129,7 +1068,7 @@ module.exports = function routed(tokenizer, openingToken, state, out) {
 };
 
 
-},{"./../RoutedTokens":10,"./../TokenTypes":11,"./../exceptions":12}],19:[function(require,module,exports){
+},{"./../RoutedTokens":8,"./../TokenTypes":9,"./../exceptions":10}],17:[function(require,module,exports){
 var TokenTypes = require('./../TokenTypes');
 var DOT_SEPARATOR = '.';
 var COMMA_SEPARATOR = ',';
@@ -1283,7 +1222,97 @@ function getNext(string, idx, ext) {
 
 
 
-},{"./../TokenTypes":11}],20:[function(require,module,exports){
+},{"./../TokenTypes":9}],18:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = extract;
+exports.extractFromCache = extractFromCache;
+// See mit-license.txt for license info
+
+function extract(model, path) {
+  return extractFromCache(model._root.cache, path);
+}
+
+// pull things out of a falcor graph, following
+// refs and unboxing values as necessary
+function extractFromCache(obj, path) {
+  var idx = arguments.length <= 2 || arguments[2] === undefined ? 0 : arguments[2];
+  var root = arguments.length <= 3 || arguments[3] === undefined ? obj : arguments[3];
+
+  var isRef = obj && obj.$type === 'ref';
+  if (isRef) {
+    var newPath = obj.value.concat(path.slice(idx));
+    return extractFromCache(root, newPath);
+  } else if (path.length - idx === 0) {
+    return obj && obj.$type ? obj.value : obj;
+  } else if (obj === null || obj === undefined) {
+    return obj;
+  } else {
+    var step = path[idx];
+    return extractFromCache(obj[step], path, idx + 1, root);
+  }
+}
+},{}],19:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _falcor = require('falcor');
+
+var _extract = require('./extract');
+
+var _extract2 = _interopRequireDefault(_extract);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } // See mit-license.txt for license info
+
+var noop = function noop() {};
+
+var SyncModel = function (_Model) {
+  _inherits(SyncModel, _Model);
+
+  function SyncModel() {
+    _classCallCheck(this, SyncModel);
+
+    return _possibleConstructorReturn(this, Object.getPrototypeOf(SyncModel).apply(this, arguments));
+  }
+
+  _createClass(SyncModel, [{
+    key: 'getValueSync',
+    value: function getValueSync(path) {
+      this.getValue(path).then(noop);
+      return (0, _extract2.default)(this, path);
+    }
+  }, {
+    key: '_clone',
+    value: function _clone(opts) {
+      var clone = new SyncModel(this);
+      for (var key in opts) {
+        var value = opts[key];
+        if (value === 'delete') {
+          delete clone[key];
+        } else {
+          clone[key] = value;
+        }
+      }
+      clone.setCache = void 0;
+      return clone;
+    }
+  }]);
+
+  return SyncModel;
+}(_falcor.Model);
+
+module.exports = SyncModel;
+},{"./extract":18,"falcor":51}],20:[function(require,module,exports){
 var ModelRoot = require("./ModelRoot");
 var ModelDataSourceAdapter = require("./ModelDataSourceAdapter");
 
@@ -1903,7 +1932,7 @@ Model.prototype._setCache = require("./set/setPathMaps");
 Model.prototype._invalidatePathValues = require("./invalidate/invalidatePathSets");
 Model.prototype._invalidatePathMaps = require("./invalidate/invalidatePathMaps");
 
-},{"./ModelDataSourceAdapter":21,"./ModelRoot":22,"./deref":24,"./deref/hasValidParentReference":23,"./deref/sync":25,"./get":40,"./get/getBoundValue":34,"./get/getCache":35,"./get/getValue":37,"./get/getValueSync":38,"./get/getVersion":39,"./get/sync":45,"./invalidate/invalidatePathMaps":54,"./invalidate/invalidatePathSets":55,"./lru/collect":56,"./request/RequestQueueV2":60,"./response/CallResponse":66,"./response/InvalidateResponse":67,"./response/ModelResponse":68,"./response/get":73,"./response/get/getWithPaths":72,"./response/get/validInput":74,"./response/set":76,"./schedulers/ASAPScheduler":80,"./schedulers/ImmediateScheduler":81,"./schedulers/TimeoutScheduler":82,"./set/setJSONGraphs":83,"./set/setPathMaps":84,"./set/setPathValues":85,"./set/setValue":86,"./set/sync":87,"./support/array-clone":88,"./support/array-slice":91,"./support/getSize":96,"./support/isJSONEnvelope":106,"./support/isJSONGraphEnvelope":107,"./support/isObject":108,"./support/isPrimitive":110,"./support/validateInput":124,"falcor-json-graph":133,"falcor-path-syntax":13}],21:[function(require,module,exports){
+},{"./ModelDataSourceAdapter":21,"./ModelRoot":22,"./deref":24,"./deref/hasValidParentReference":23,"./deref/sync":25,"./get":40,"./get/getBoundValue":34,"./get/getCache":35,"./get/getValue":37,"./get/getValueSync":38,"./get/getVersion":39,"./get/sync":45,"./invalidate/invalidatePathMaps":54,"./invalidate/invalidatePathSets":55,"./lru/collect":56,"./request/RequestQueueV2":60,"./response/CallResponse":66,"./response/InvalidateResponse":67,"./response/ModelResponse":68,"./response/get":73,"./response/get/getWithPaths":72,"./response/get/validInput":74,"./response/set":76,"./schedulers/ASAPScheduler":80,"./schedulers/ImmediateScheduler":81,"./schedulers/TimeoutScheduler":82,"./set/setJSONGraphs":83,"./set/setPathMaps":84,"./set/setPathValues":85,"./set/setValue":86,"./set/sync":87,"./support/array-clone":88,"./support/array-slice":91,"./support/getSize":96,"./support/isJSONEnvelope":106,"./support/isJSONGraphEnvelope":107,"./support/isObject":108,"./support/isPrimitive":110,"./support/validateInput":124,"falcor-json-graph":133,"falcor-path-syntax":11}],21:[function(require,module,exports){
 function ModelDataSourceAdapter(model) {
     this._model = model._materialize().boxValues().treatErrorsAsValues();
 }
@@ -2093,7 +2122,7 @@ module.exports = function derefSync(boundPathArg) {
     return this._clone({ _path: path });
 };
 
-},{"./../errors/InvalidModelError":28,"./../get/getBoundValue":34,"falcor-path-syntax":13}],26:[function(require,module,exports){
+},{"./../errors/InvalidModelError":28,"./../get/getBoundValue":34,"falcor-path-syntax":11}],26:[function(require,module,exports){
 /**
  * When a bound model attempts to retrieve JSONGraph it should throw an
  * error.
@@ -2570,7 +2599,7 @@ module.exports = function getValue(path) {
     });
 };
 
-},{"./../response/ModelResponse":68,"falcor-path-syntax":13}],38:[function(require,module,exports){
+},{"./../response/ModelResponse":68,"falcor-path-syntax":11}],38:[function(require,module,exports){
 var followReference = require("./../get/followReference");
 var clone = require("./../get/util/clone");
 var isExpired = require("./../get/util/isExpired");
@@ -3006,7 +3035,7 @@ module.exports = function getValueSync(pathArg) {
     return this._syncCheck("getValueSync") && this._getValueSync(this, path).value;
 };
 
-},{"falcor-path-syntax":13}],46:[function(require,module,exports){
+},{"falcor-path-syntax":11}],46:[function(require,module,exports){
 // Copies the node
 var unicodePrefix = require("./../../internal/unicodePrefix");
 
@@ -4508,7 +4537,7 @@ CallResponse.prototype._subscribe = function _subscribe(observer) {
 
 module.exports = CallResponse;
 
-},{"./../errors/InvalidSourceError":29,"./../response/ModelResponse":68,"falcor-path-syntax":13}],67:[function(require,module,exports){
+},{"./../errors/InvalidSourceError":29,"./../response/ModelResponse":68,"falcor-path-syntax":11}],67:[function(require,module,exports){
 var isArray = Array.isArray;
 var ModelResponse = require("./ModelResponse");
 var isPathValue = require("./../support/isPathValue");
@@ -5006,7 +5035,7 @@ module.exports = function get() {
     return new GetResponse(this, paths);
 };
 
-},{"./../../support/validateInput":124,"./../ModelResponse":68,"./GetResponse":69,"./validInput":74,"falcor-path-syntax":13}],74:[function(require,module,exports){
+},{"./../../support/validateInput":124,"./../ModelResponse":68,"./GetResponse":69,"./validInput":74,"falcor-path-syntax":11}],74:[function(require,module,exports){
 module.exports = {
     path: true,
     pathSyntax: true
@@ -5122,7 +5151,7 @@ SetResponse.prototype.progressively = function progressively() {
                            this._isJSONGraph, true);
 };
 
-},{"./../../support/isJSONEnvelope":106,"./../../support/isJSONGraphEnvelope":107,"./../../support/isPathValue":109,"./../ModelResponse":68,"./setRequestCycle":78,"falcor-path-syntax":13}],76:[function(require,module,exports){
+},{"./../../support/isJSONEnvelope":106,"./../../support/isJSONGraphEnvelope":107,"./../../support/isPathValue":109,"./../ModelResponse":68,"./setRequestCycle":78,"falcor-path-syntax":11}],76:[function(require,module,exports){
 var setValidInput = require("./setValidInput");
 var validateInput = require("./../../support/validateInput");
 var SetResponse = require("./SetResponse");
@@ -6156,7 +6185,7 @@ module.exports = function setValueSync(pathArg, valueArg, errorSelectorArg, comp
     }
 };
 
-},{"./../set/setPathValues":85,"./../support/isPathValue":109,"falcor-path-syntax":13}],88:[function(require,module,exports){
+},{"./../set/setPathValues":85,"./../support/isPathValue":109,"falcor-path-syntax":11}],88:[function(require,module,exports){
 module.exports = function arrayClone(array) {
     if (!array) {
         return array;
@@ -6923,7 +6952,7 @@ module.exports = function validateInput(args, allowedInput, method) {
     return true;
 };
 
-},{"./../support/isJSONEnvelope":106,"./../support/isJSONGraphEnvelope":107,"./../support/isPathValue":109,"falcor-path-syntax":13}],125:[function(require,module,exports){
+},{"./../support/isJSONEnvelope":106,"./../support/isJSONGraphEnvelope":107,"./../support/isPathValue":109,"falcor-path-syntax":11}],125:[function(require,module,exports){
 var now = require("./../support/now");
 var expiresNow = require("../values/expires-now");
 
@@ -7337,7 +7366,7 @@ module.exports = {
     }    
 };
 
-},{"falcor-path-syntax":13}],134:[function(require,module,exports){
+},{"falcor-path-syntax":11}],134:[function(require,module,exports){
 var toPaths = require('./toPaths');
 var toTree = require('./toTree');
 
@@ -8273,5 +8302,5 @@ Promise.prototype.nodeify = function (callback, ctx) {
   });
 }
 
-},{"./core.js":144,"asap":131}]},{},[2])(2)
+},{"./core.js":144,"asap":131}]},{},[1])(1)
 });

@@ -1,8 +1,7 @@
 // See mit-license.txt for license info
 
-import { Model } from 'falcor';
+import SyncModel from 'falcor-sync-model';
 import HttpDataSource from 'falcor-http-datasource';
-import extract from './extract';
 import pathSyntax from 'falcor-path-syntax';
 import memoize from './memoize';
 
@@ -21,16 +20,12 @@ function create(opts = {}) {
     // Central cache of data shared by all ngf consumers.
     let model;
 
-    // Extract values from this for synchronous reads.
-    let graph;
-
     // no-op callback since Falcor responses are lazy
     var thcb = () => {};
 
     // Retrieve a value. Path must reference a single node in the graph.
     const ngf = pathify(function(path) {
-      model.getValue(path).then(thcb);
-      return extract(graph, path);
+      return model.getValueSync(path);
     });
 
     ngf.configure = function({
@@ -47,8 +42,7 @@ function create(opts = {}) {
       } else {
         source = undefined;
       }
-      model = new Model({ source, onChange, cache }).batch();
-      graph = model._root.cache;
+      model = new SyncModel({ source, onChange, cache }).batch();
       $rootScope.$evalAsync();
     };
 
@@ -77,7 +71,7 @@ function create(opts = {}) {
         if (isSet) {
           ngf.set({ path, value }).then(thcb);
         } else {
-          return extract(graph, path);
+          return model.getValueSync(path);
         }
       };
     };

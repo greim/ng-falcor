@@ -165,7 +165,7 @@
     "no-path-concat": 0,        // disallow string concatenation with __dirname and __filename (off by default) (on by default in the node environment)
     "no-process-exit": 0,       // disallow process.exit() (on by default in the node environment)
     "no-restricted-modules": 0, // restrict usage of specified node modules (off by default)
-    "no-sync": 1,               // disallow use of synchronous methods (off by default)
+    "no-sync": 0,               // disallow use of synchronous methods (off by default)
 
 
     ////////// Stylistic Issues //////////
