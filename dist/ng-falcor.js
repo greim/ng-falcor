@@ -121,11 +121,11 @@ function create() {
       var srcName = _arr$_i[0];
       var destName = _arr$_i[1];
 
-      ngf[destName] = (0, _thenify2.default)(function () {
+      ngf[destName] = function () {
         var _model;
 
         return (_model = model)[srcName].apply(_model, arguments);
-      });
+      };
     };
 
     for (var _i = 0; _i < _arr.length; _i++) {

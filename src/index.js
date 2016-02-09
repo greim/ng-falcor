@@ -4,7 +4,6 @@ import { Model } from 'falcor';
 import HttpDataSource from 'falcor-http-datasource';
 import extract from './extract';
 import pathSyntax from 'falcor-path-syntax';
-import thenify from './thenify';
 import memoize from './memoize';
 
 const parse = memoize(pathSyntax.fromPath);
@@ -25,8 +24,10 @@ function create(opts = {}) {
     // Extract values from this for synchronous reads.
     let graph;
 
-    // Retrieve a value. Path must reference a single node in the graph.
+    // no-op callback since Falcor responses are lazy
     var thcb = () => {};
+
+    // Retrieve a value. Path must reference a single node in the graph.
     const ngf = pathify(function(path) {
       model.getValue(path).then(thcb);
       return extract(graph, path);
@@ -63,9 +64,9 @@ function create(opts = {}) {
       [ 'withoutDataSource', 'withoutDataSource' ],
       [ 'getCache', 'getCache' ]
     ]) {
-      ngf[destName] = thenify(function(...args) {
+      ngf[destName] = function(...args) {
         return model[srcName](...args);
-      });
+      };
     }
 
     // Two-way binding helper.
@@ -74,7 +75,7 @@ function create(opts = {}) {
       return function(value) {
         const isSet = arguments.length > 0;
         if (isSet) {
-          ngf.set({ path, value });
+          ngf.set({ path, value }).then(thcb);
         } else {
           return extract(graph, path);
         }
