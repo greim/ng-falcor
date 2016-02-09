@@ -14,7 +14,7 @@ var _falcorHttpDatasource2 = _interopRequireDefault(_falcorHttpDatasource);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function create() {
-  var opts = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+  var origOpts = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
 
   function factory($rootScope) {
@@ -43,7 +43,8 @@ function create() {
     ngf.reconfigure = function () {
       var newOpts = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
-      var headers = Object.assign({}, opts.headers, newOpts.headers);
+      var opts = ngf._config;
+      var headers = newOpts.headers === undefined || newOpts.headers ? Object.assign({}, opts.headers, newOpts.headers) : undefined;
       var cache = newOpts.cache || undefined;
       var router = undefined,
           timeout = undefined,
@@ -76,15 +77,17 @@ function create() {
       var headers = _ref.headers;
       var cache = _ref.cache;
 
-      opts = arguments[0];
+      ngf._config = arguments[0];
+      delete ngf._config.cache;
       if (!source && router) {
         source = new _falcorHttpDatasource2.default(router, { timeout: timeout, headers: headers });
       }
+      ngf._config._source = source;
       model = new _falcorSyncModel2.default({ source: source, onChange: onChange, cache: cache }).batch();
       $rootScope.$evalAsync();
     };
 
-    ngf.configure(opts);
+    ngf.configure(origOpts);
 
     // proxy the model on this object
     var _arr = [['get', 'get'], ['getValue', 'getValue'], ['set', 'set'], ['call', 'callModel'], ['invalidate', 'invalidate'], ['withoutDataSource', 'withoutDataSource'], ['getCache', 'getCache']];

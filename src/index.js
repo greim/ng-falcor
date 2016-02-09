@@ -3,7 +3,7 @@
 import SyncModel from 'falcor-sync-model';
 import HttpDataSource from 'falcor-http-datasource';
 
-function create(opts = {}) {
+function create(origOpts = {}) {
 
   function factory($rootScope) {
 
@@ -23,7 +23,10 @@ function create(opts = {}) {
     };
 
     ngf.reconfigure = function(newOpts = {}) {
-      const headers = Object.assign({}, opts.headers, newOpts.headers);
+      const opts = ngf._config;
+      const headers = newOpts.headers === undefined || newOpts.headers
+        ? Object.assign({}, opts.headers, newOpts.headers)
+        : undefined;
       const cache = newOpts.cache || undefined;
       let router, timeout, source;
       if (newOpts.router !== undefined) { router = router || undefined; }
@@ -37,15 +40,17 @@ function create(opts = {}) {
     };
 
     ngf.configure = function({ source, router, timeout, headers, cache } = {}) {
-      opts = arguments[0];
+      ngf._config = arguments[0];
+      delete ngf._config.cache;
       if (!source && router) {
         source = new HttpDataSource(router, { timeout, headers });
       }
+      ngf._config._source = source;
       model = new SyncModel({ source, onChange, cache }).batch();
       $rootScope.$evalAsync();
     };
 
-    ngf.configure(opts);
+    ngf.configure(origOpts);
 
     // proxy the model on this object
     for (const [ srcName, destName ] of [

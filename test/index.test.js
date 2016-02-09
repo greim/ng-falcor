@@ -194,6 +194,57 @@ describe('ng-falcor', () => {
       await resp;
       assert.strictEqual(count, 1);
     });
+
+    it('should have initial configuration', () => {
+      const factory = create({ router: '/model.json' });
+      const ngf = factory($rootScope);
+      assert.strictEqual(ngf._config.router, '/model.json');
+      assert(!!ngf._config._source, 'missing source');
+    });
+
+    it('should configure', () => {
+      const factory = create();
+      const ngf = factory($rootScope);
+      ngf.configure({ router: '/model.json' });
+      assert.strictEqual(ngf._config.router, '/model.json');
+      assert(!!ngf._config._source, 'missing source');
+    });
+
+    it('should configure router', () => {
+      const factory = create({ router: '/model.json' });
+      const ngf = factory($rootScope);
+      const oldSource = ngf._config._source;
+      ngf.configure({ router: '/model2.json' });
+      assert.strictEqual(ngf._config.router, '/model2.json');
+      assert(oldSource !== ngf._config._source, 'wrong source');
+    });
+
+    it('should reconfigure', () => {
+      const factory = create({ headers: { foo: 'bar' } });
+      const ngf = factory($rootScope);
+      ngf.reconfigure({ headers: { baz: 'qux' } });
+      assert.deepEqual(ngf._config.headers, { foo: 'bar', baz: 'qux' });
+    });
+
+    it('should reconfigure set null', () => {
+      const factory = create({ router: '/foo' });
+      const ngf = factory($rootScope);
+      ngf.reconfigure({ router: null });
+      assert.strictEqual(ngf._config.router, undefined);
+    });
+
+    it('should reconfigure headers set null', () => {
+      const factory = create({ headers: { foo: 'bar' } });
+      const ngf = factory($rootScope);
+      ngf.reconfigure({ headers: null });
+      assert.strictEqual(ngf._config.headers, undefined);
+    });
+
+    it('should not keep ref to cache', () => {
+      const factory = create({ cache: { foo: 'bar' } });
+      const ngf = factory($rootScope);
+      assert.strictEqual(ngf._config.cache, undefined);
+    });
   });
 
   describe('two-way binding', () => {
@@ -233,12 +284,6 @@ describe('ng-falcor', () => {
       tw('baz');
       val = tw();
       assert.strictEqual(val, 'baz');
-    });
-
-    it('should configure', () => {
-      const factory = create();
-      const ngf = factory($rootScope);
-      ngf.configure();
     });
   });
 });
