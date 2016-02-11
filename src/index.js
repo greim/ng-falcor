@@ -14,7 +14,7 @@ function create(origOpts = {}) {
     let model;
 
     // no-op callback since Falcor responses are lazy
-    var thcb = () => {};
+    const thcb = () => {};
 
     // Retrieve a value. Path must reference a single node in the graph.
     const ngf = function(...path) {
@@ -84,9 +84,9 @@ function create(origOpts = {}) {
     ngf.range = function(lo, hi) {
       const result = [];
       if (lo < hi) {
-        for (var i=lo; i<=hi; i++) { result.push(i); }
+        for (let i=lo; i<=hi; i++) { result.push(i); }
       } else if (hi < lo) {
-        for (var i=lo; i>=hi; i--) { result.push(i); }
+        for (let j=lo; j>=hi; j--) { result.push(j); }
       }
       return result;
     };
