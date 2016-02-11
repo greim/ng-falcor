@@ -245,6 +245,27 @@ describe('ng-falcor', () => {
       const ngf = factory($rootScope);
       assert.strictEqual(ngf._config.cache, undefined);
     });
+
+    it('should create a range', () => {
+      const factory = create();
+      const ngf = factory($rootScope);
+      const range = ngf.range(0,3);
+      assert.deepEqual(range, [0,1,2,3]);
+    });
+
+    it('should create a range starting above zero', () => {
+      const factory = create();
+      const ngf = factory($rootScope);
+      const range = ngf.range(10,13);
+      assert.deepEqual(range, [10,11,12,13]);
+    });
+
+    it('should create an inverted range', () => {
+      const factory = create();
+      const ngf = factory($rootScope);
+      const range = ngf.range(13,10);
+      assert.deepEqual(range, [13,12,11,10]);
+    });
   });
 
   describe('two-way binding', () => {

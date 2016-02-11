@@ -122,6 +122,21 @@ function create() {
       };
     };
 
+    // helper for listing listable things in falcor
+    ngf.range = function (lo, hi) {
+      var result = [];
+      if (lo < hi) {
+        for (var i = lo; i <= hi; i++) {
+          result.push(i);
+        }
+      } else if (hi < lo) {
+        for (var i = lo; i >= hi; i--) {
+          result.push(i);
+        }
+      }
+      return result;
+    };
+
     // All done.
     return ngf;
   }
