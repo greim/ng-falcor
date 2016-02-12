@@ -266,6 +266,35 @@ describe('ng-falcor', () => {
       const range = ngf.range(13,10);
       assert.deepEqual(range, [13,12,11,10]);
     });
+
+    it('should scope', () => {
+      const cache = {
+        users: {
+          abc: { foo: 'aaa', bar: 'bbb' }
+        }
+      };
+      const factory = create({ cache });
+      const ngf = factory($rootScope);
+      const abc = ngf.scope(['users','abc']);
+      const val = abc('foo');
+      assert.strictEqual(val, 'aaa');
+    });
+
+    it('should scope following references', () => {
+      const cache = {
+        things: {
+          def: { bar: 'baz' }
+        },
+        users: {
+          abc: { foo: { $type: 'ref', value: [ 'things', 'def' ] } }
+        }
+      };
+      const factory = create({ cache });
+      const ngf = factory($rootScope);
+      const abc = ngf.scope(['users','abc']);
+      const val = abc('foo', 'bar');
+      assert.strictEqual(val, 'baz');
+    });
   });
 
   describe('two-way binding', () => {

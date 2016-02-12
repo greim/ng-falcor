@@ -47,6 +47,7 @@ It has several methods:
  * `ngf.invalidate(...args)` - Alias to [`invalidate(...args)`](https://netflix.github.io/falcor/doc/Model.html#invalidate) on the internal Falcor model.
  * `ngf.configure(opts)` - Configure your `ngf` object with a fresh configuration. Accepts same options as `ngFalcor.create(options)`. Warning: this has the side effect of deleting all cached Falcor data.
  * `ngf.reconfigure(opts)` - Reconfigure your `ngf` object. Accepts same options as `ngFalcor.create(options)`. Warning: this has the side effect of deleting all cached Falcor data. The difference between this and `ngf.configure()` is that this merges the given configuration information into the existing, instead of replacing it.
+ * `ngf.scope(rootPath)` - Returns a function that behaves just like `ngf(path)`, except `rootPath` is prepended to `path`.
 
 ## Example
 

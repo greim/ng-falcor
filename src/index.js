@@ -22,6 +22,14 @@ function create(origOpts = {}) {
       return model.getValueSync(path);
     };
 
+    ngf.scope = function(scope) {
+      return function(...path) {
+        path = pathify(path);
+        path = scope.concat(path);
+        return model.getValueSync(path);
+      };
+    };
+
     ngf.reconfigure = function(newOpts = {}) {
       const opts = ngf._config;
       const headers = newOpts.headers === undefined || newOpts.headers

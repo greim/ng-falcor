@@ -40,6 +40,18 @@ function create() {
       return model.getValueSync(path);
     };
 
+    ngf.scope = function (scope) {
+      return function () {
+        for (var _len2 = arguments.length, path = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+          path[_key2] = arguments[_key2];
+        }
+
+        path = pathify(path);
+        path = scope.concat(path);
+        return model.getValueSync(path);
+      };
+    };
+
     ngf.reconfigure = function () {
       var newOpts = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
@@ -130,8 +142,8 @@ function create() {
           result.push(i);
         }
       } else if (hi < lo) {
-        for (var i = lo; i >= hi; i--) {
-          result.push(i);
+        for (var j = lo; j >= hi; j--) {
+          result.push(j);
         }
       }
       return result;
@@ -146,8 +158,8 @@ function create() {
 }
 
 function pathify() {
-  for (var _len2 = arguments.length, path = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-    path[_key2] = arguments[_key2];
+  for (var _len3 = arguments.length, path = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+    path[_key3] = arguments[_key3];
   }
 
   if (Array.isArray(path[0])) {
