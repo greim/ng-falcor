@@ -295,6 +295,12 @@ describe('ng-falcor', () => {
       const val = abc('foo', 'bar');
       assert.strictEqual(val, 'baz');
     });
+
+    it('should accept both arrays and bare args', () => {
+      const factory = create({ cache: { foo: { bar: { baz: 3 } } } });
+      const ngf = factory($rootScope);
+      assert.strictEqual(ngf('foo', 'bar', 'baz'), ngf(['foo', 'bar', 'baz']));
+    });
   });
 
   describe('two-way binding', () => {
@@ -334,6 +340,14 @@ describe('ng-falcor', () => {
       tw('baz');
       val = tw();
       assert.strictEqual(val, 'baz');
+    });
+
+    it('should accept both bare args and array', () => {
+      const factory = create({ cache: { foo: { bar: 2 } } });
+      const ngf = factory($rootScope);
+      const tw1 = ngf.twoWay('foo', 'bar');
+      const tw2 = ngf.twoWay(['foo', 'bar']);
+      assert.strictEqual(tw1(), tw2());
     });
   });
 });

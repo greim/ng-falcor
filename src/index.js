@@ -76,7 +76,7 @@ function create(origOpts = {}) {
     }
 
     // Two-way binding helper.
-    ngf.twoWay = function(path) {
+    ngf.twoWay = function(...path) {
       path = pathify(path);
       return function(value) {
         const isSet = arguments.length > 0;
@@ -107,7 +107,7 @@ function create(origOpts = {}) {
   return factory;
 }
 
-function pathify(...path) {
+function pathify(path) {
   if (Array.isArray(path[0])) {
     path = path[0];
   }

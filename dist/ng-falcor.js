@@ -122,7 +122,11 @@ function create() {
     }
 
     // Two-way binding helper.
-    ngf.twoWay = function (path) {
+    ngf.twoWay = function () {
+      for (var _len3 = arguments.length, path = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+        path[_key3] = arguments[_key3];
+      }
+
       path = pathify(path);
       return function (value) {
         var isSet = arguments.length > 0;
@@ -157,11 +161,7 @@ function create() {
   return factory;
 }
 
-function pathify() {
-  for (var _len3 = arguments.length, path = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
-    path[_key3] = arguments[_key3];
-  }
-
+function pathify(path) {
   if (Array.isArray(path[0])) {
     path = path[0];
   }
