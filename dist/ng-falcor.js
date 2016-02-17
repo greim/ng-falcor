@@ -113,7 +113,13 @@ function create() {
       ngf[destName] = function () {
         var _model;
 
-        return (_model = model)[srcName].apply(_model, arguments);
+        var result = (_model = model)[srcName].apply(_model, arguments);
+        if (result && typeof result.then === 'function') {
+          // Falcor model responses aren't true promises,
+          // but the thing returned by then() is.
+          result = result.then(ident);
+        }
+        return result;
       };
     };
 
@@ -159,6 +165,10 @@ function create() {
 
   factory.$inject = ['$rootScope'];
   return factory;
+}
+
+function ident(thing) {
+  return thing;
 }
 
 function pathify(path) {

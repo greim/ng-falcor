@@ -71,7 +71,13 @@ function create(origOpts = {}) {
       [ 'getCache', 'getCache' ]
     ]) {
       ngf[destName] = function(...args) {
-        return model[srcName](...args);
+        let result = model[srcName](...args);
+        if (result && typeof result.then === 'function') {
+          // Falcor model responses aren't true promises,
+          // but the thing returned by then() is.
+          result = result.then(ident);
+        }
+        return result;
       };
     }
 
@@ -105,6 +111,10 @@ function create(origOpts = {}) {
 
   factory.$inject = ['$rootScope'];
   return factory;
+}
+
+function ident(thing) {
+  return thing;
 }
 
 function pathify(path) {
