@@ -58,11 +58,12 @@ describe('ng-falcor', () => {
       assert.strictEqual(typeof ngf.getValue, 'function');
     });
 
-    it('getValue should return a thenable', () => {
+    it('getValue should return a promise', () => {
       const factory = create({});
       const ngf = factory($rootScope);
       const thenable = ngf.getValue(['foo']);
-      assert.strictEqual(typeof thenable.then, 'function');
+      assert.strictEqual(typeof thenable.then, 'function', 'no then method');
+      assert.strictEqual(typeof thenable.catch, 'function', 'no catch method');
     });
 
     it('should return undefined at first', () => {
@@ -174,24 +175,9 @@ describe('ng-falcor', () => {
       };
       const factory = create({ source });
       const ngf = factory($rootScope);
-      await ngf.callModel('foo', ['a'], [], []);
-      assert.strictEqual(count, 1);
-    });
-
-    // https://github.com/Netflix/falcor/issues/728
-    it.skip('should not dupe calls to data source (2)', async function() {
-      let count = 0;
-      const sourceModel = new Model({ cache: { a: 'b' } });
-      const source = sourceModel.asDataSource();
-      source.call = function() {
-        count++;
-        const fakeResp = sourceModel.get('a');
-        return fakeResp;
-      };
-      const model = new Model({ source });
-      const resp = model.call('foo', ['baz'], [], []);
-      await resp;
-      await resp;
+      const prom = ngf.callModel('foo', ['a'], [], []);
+      await prom;
+      await prom;
       assert.strictEqual(count, 1);
     });
 
