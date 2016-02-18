@@ -19,7 +19,9 @@ function create(origOpts = {}) {
     // Retrieve a value. Path must reference a single node in the graph.
     const ngf = function(...path) {
       path = pathify(path);
-      return model.getValueSync(path);
+      return noUndef(path)
+        ? model.getValueSync(path)
+        : undefined;
     };
 
     ngf.scope = function(scope) {
@@ -122,6 +124,15 @@ function pathify(path) {
     path = path[0];
   }
   return path;
+}
+
+function noUndef(path) {
+  for (var i=0; i<path.length; i++) {
+    if (path[i] === undefined || path[i] === null) {
+      return false;
+    }
+  }
+  return true;
 }
 
 module.exports = { create };
