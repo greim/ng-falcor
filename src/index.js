@@ -1,6 +1,7 @@
 // See mit-license.txt for license info
 
 import SyncModel from 'falcor-sync-model';
+import falcor from 'falcor';
 import HttpDataSource from 'falcor-http-datasource';
 
 function create(origOpts = {}) {
@@ -108,6 +109,10 @@ function create(origOpts = {}) {
       }
       return result;
     };
+
+    ngf.ref = falcor.Model.ref;
+    ngf.atom = falcor.Model.atom;
+    ngf.error = falcor.Model.error;
 
     // All done.
     return ngf;

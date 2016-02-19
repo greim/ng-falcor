@@ -7,6 +7,10 @@ var _falcorSyncModel = require('falcor-sync-model');
 
 var _falcorSyncModel2 = _interopRequireDefault(_falcorSyncModel);
 
+var _falcor = require('falcor');
+
+var _falcor2 = _interopRequireDefault(_falcor);
+
 var _falcorHttpDatasource = require('falcor-http-datasource');
 
 var _falcorHttpDatasource2 = _interopRequireDefault(_falcorHttpDatasource);
@@ -161,6 +165,10 @@ function create() {
       return result;
     };
 
+    ngf.ref = _falcor2.default.Model.ref;
+    ngf.atom = _falcor2.default.Model.atom;
+    ngf.error = _falcor2.default.Model.error;
+
     // All done.
     return ngf;
   }
@@ -190,7 +198,7 @@ function noUndef(path) {
 }
 
 module.exports = { create: create };
-},{"falcor-http-datasource":2,"falcor-sync-model":18}],2:[function(require,module,exports){
+},{"falcor":50,"falcor-http-datasource":2,"falcor-sync-model":18}],2:[function(require,module,exports){
 'use strict';
 var request = require('./request');
 var buildQueryObject = require('./buildQueryObject');

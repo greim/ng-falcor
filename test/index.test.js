@@ -307,6 +307,14 @@ describe('ng-falcor', () => {
       assert.strictEqual(ngf('foo', null, 'baz'), undefined);
       assert.strictEqual(ngf('foo', undefined, 'baz'), undefined);
     });
+
+    it('should have $error, $ref, $atom', () => {
+      const factory = create();
+      const ngf = factory($rootScope);
+      assert.strictEqual(typeof ngf.ref, 'function');
+      assert.strictEqual(typeof ngf.atom, 'function');
+      assert.strictEqual(typeof ngf.error, 'function');
+    });
   });
 
   describe('two-way binding', () => {
