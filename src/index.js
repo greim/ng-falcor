@@ -3,6 +3,7 @@
 import SyncModel from 'falcor-sync-model';
 import falcor from 'falcor';
 import HttpDataSource from 'falcor-http-datasource';
+import detach from './detach';
 
 function create(origOpts = {}) {
 
@@ -108,6 +109,14 @@ function create(origOpts = {}) {
         for (let j=lo; j>=hi; j--) { result.push(j); }
       }
       return result;
+    };
+
+    ngf.detach = function(template) {
+      return detach(model, template);
+    };
+
+    ngf.reattach = function(data) {
+      return data._save();
     };
 
     ngf.ref = falcor.Model.ref;

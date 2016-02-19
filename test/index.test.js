@@ -315,6 +315,44 @@ describe('ng-falcor', () => {
       assert.strictEqual(typeof ngf.atom, 'function');
       assert.strictEqual(typeof ngf.error, 'function');
     });
+
+    it('should detach', done => {
+      const cache = { foo: 1, bar: { baz: 2 }, qux: 3 };
+      const factory = create({ cache });
+      const ngf = factory($rootScope);
+      ngf.detach({
+        foo: ['foo'],
+        baz: ['bar', 'baz'],
+        qux: ['qux']
+      })
+      .then(detached => {
+        assert.deepEqual(detached, { foo: 1, baz: 2, qux: 3 });
+        done();
+      })
+      .catch(done);
+    });
+
+    it('should reattach', done => {
+      const cache = { foo: 1, bar: { baz: 2 }, qux: 3 };
+      const factory = create({ cache });
+      const ngf = factory($rootScope);
+      ngf.detach({
+        foo: ['foo'],
+        baz: ['bar', 'baz'],
+        qux: ['qux']
+      })
+      .then(detached => {
+        detached.foo = 123;
+        return ngf.reattach(detached);
+      })
+      .then(() => {
+        assert.strictEqual(ngf('foo'), 123);
+        assert.strictEqual(ngf('bar', 'baz'), 2);
+        assert.strictEqual(ngf('qux'), 3);
+        done();
+      })
+      .catch(done);
+    });
   });
 
   describe('two-way binding', () => {
