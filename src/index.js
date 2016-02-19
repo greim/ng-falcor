@@ -25,9 +25,11 @@ function create(origOpts = {}) {
     };
 
     ngf.scope = function(scope) {
+      const isFun = typeof scope === 'function';
       return function(...path) {
+        const aScope = isFun ? scope() : scope;
         path = pathify(path);
-        path = scope.concat(path);
+        path = aScope.concat(path);
         return model.getValueSync(path);
       };
     };

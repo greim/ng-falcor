@@ -266,6 +266,19 @@ describe('ng-falcor', () => {
       assert.strictEqual(val, 'aaa');
     });
 
+    it('should scope with a function', () => {
+      const cache = {
+        users: {
+          abc: { foo: 'aaa', bar: 'bbb' }
+        }
+      };
+      const factory = create({ cache });
+      const ngf = factory($rootScope);
+      const abc = ngf.scope(() => ['users','abc']);
+      const val = abc('foo');
+      assert.strictEqual(val, 'aaa');
+    });
+
     it('should scope following references', () => {
       const cache = {
         things: {

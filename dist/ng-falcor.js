@@ -41,13 +41,15 @@ function create() {
     };
 
     ngf.scope = function (scope) {
+      var isFun = typeof scope === 'function';
       return function () {
         for (var _len2 = arguments.length, path = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
           path[_key2] = arguments[_key2];
         }
 
+        var aScope = isFun ? scope() : scope;
         path = pathify(path);
-        path = scope.concat(path);
+        path = aScope.concat(path);
         return model.getValueSync(path);
       };
     };
