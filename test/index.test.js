@@ -353,6 +353,80 @@ describe('ng-falcor', () => {
       })
       .catch(done);
     });
+
+    describe('paging', () => {
+
+      describe('stepping', () => {
+
+        it('should initialize to zero', () => {
+          const factory = create({});
+          const ngf = factory($rootScope);
+          const stepper = ngf.stepper(3);
+          assert.strictEqual(stepper.hasNext(3), false);
+          assert.strictEqual(stepper.hasNext(4), true);
+          assert.strictEqual(stepper.hasPrev(), false);
+          assert.deepEqual(stepper.indices(), [0,1,2]);
+        });
+
+        it('should not prev into negative range', () => {
+          const factory = create({});
+          const ngf = factory($rootScope);
+          const stepper = ngf.stepper(3);
+          stepper.prev();
+          assert.strictEqual(stepper.hasNext(3), false);
+          assert.strictEqual(stepper.hasNext(4), true);
+          assert.strictEqual(stepper.hasPrev(), false);
+          assert.deepEqual(stepper.indices(), [0,1,2]);
+        });
+
+        it('should step on next', () => {
+          const factory = create({});
+          const ngf = factory($rootScope);
+          const stepper = ngf.stepper(3);
+          stepper.prev();
+          stepper.next();
+          assert.strictEqual(stepper.hasNext(6), false);
+          assert.strictEqual(stepper.hasNext(7), true);
+          assert.strictEqual(stepper.hasPrev(), true);
+          assert.deepEqual(stepper.indices(), [3,4,5]);
+        });
+
+        it('should reverse step on prev', () => {
+          const factory = create({});
+          const ngf = factory($rootScope);
+          const stepper = ngf.stepper(3);
+          stepper.prev();
+          stepper.next();
+          stepper.prev();
+          assert.strictEqual(stepper.hasNext(3), false);
+          assert.strictEqual(stepper.hasNext(4), true);
+          assert.strictEqual(stepper.hasPrev(), false);
+          assert.deepEqual(stepper.indices(), [0,1,2]);
+        });
+      });
+
+      describe('increasing', () => {
+
+        it('should initialize to zero', () => {
+          const factory = create({});
+          const ngf = factory($rootScope);
+          const increaser = ngf.increaser(3);
+          assert.strictEqual(increaser.hasMore(3), false);
+          assert.strictEqual(increaser.hasMore(4), true);
+          assert.deepEqual(increaser.indices(), [0,1,2]);
+        });
+
+        it('should increase on more', () => {
+          const factory = create({});
+          const ngf = factory($rootScope);
+          const increaser = ngf.increaser(3);
+          increaser.more();
+          assert.strictEqual(increaser.hasMore(6), false);
+          assert.strictEqual(increaser.hasMore(7), true);
+          assert.deepEqual(increaser.indices(), [0,1,2,3,4,5]);
+        });
+      });
+    });
   });
 
   describe('two-way binding', () => {

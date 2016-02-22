@@ -4,6 +4,8 @@ import SyncModel from 'falcor-sync-model';
 import falcor from 'falcor';
 import HttpDataSource from 'falcor-http-datasource';
 import detach from './detach';
+import steppingPager from './stepping-pager';
+import increasingPager from './increasing-pager';
 
 function create(origOpts = {}) {
 
@@ -119,6 +121,8 @@ function create(origOpts = {}) {
       return data._save();
     };
 
+    ngf.stepper = steppingPager;
+    ngf.increaser = increasingPager;
     ngf.ref = falcor.Model.ref;
     ngf.atom = falcor.Model.atom;
     ngf.error = falcor.Model.error;
