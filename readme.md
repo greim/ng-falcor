@@ -30,7 +30,7 @@ Pass it an options hash:
  * **router** (string) If provided, a new [`falcor.HttpDataSource`](https://netflix.github.io/falcor/documentation/datasources.html) is created using this and added to the model. This is an alternative to `source`.
  * **headers** (object) An object containing HTTP request headers. If provided, the falcor HttpDatasource will send these headers along with every request. Only use in conjunction with `router`.
  * **timeout** (number) If provided, falcor HttpDatasource requests will timeout after this many milliseconds. Only use in conjunction with `router`.
- * **cache** (object) Pre-populate the model cache. Useful for bootstrapping data for example. Only use in conjunction with `router`.
+ * **cache** (object) Pre-populate the model cache. Useful for bootstrapping data for example.
 
 ### `ngf`
 
@@ -47,7 +47,7 @@ It has several methods:
  * `ngf.invalidate(...args)` - Alias to [`invalidate(...args)`](https://netflix.github.io/falcor/doc/Model.html#invalidate) on the internal Falcor model.
  * `ngf.configure(opts)` - Configure your `ngf` object with a fresh configuration. Accepts same options as `ngFalcor.create(options)`. Warning: this has the side effect of deleting all cached Falcor data.
  * `ngf.reconfigure(opts)` - Reconfigure your `ngf` object. Accepts same options as `ngFalcor.create(options)`. Warning: this has the side effect of deleting all cached Falcor data. The difference between this and `ngf.configure()` is that this merges the given configuration information into the existing, instead of replacing it.
- * `ngf.scope(rootPath)` - Returns a function that behaves just like `ngf(path)`, except `rootPath` is prepended to `path`.
+ * `ngf.scope(rootPath)` - Returns a function that behaves just like `ngf(path)`, except `rootPath` is prepended to `path`. `rootPath` can also be a function that returns a path.
  * `ngf.detach(template)` - Creates a detached object containing data from the Falcor model based on the given `template`. The template object is keyed/valued by names/paths. Returns a promise for an object matching the templates, with values resolved from Falcor based on corresponding paths. This object can then be mutated arbitrarily. See also `ngf.attach()` below.
  * `ngf.reattach(detached)` - Takes an object returned from `ngf.detach()` (see above) and reattaches it to the model, calling set on the model as necessary. Presumably, the values of this object will have been mutated in some way. Returns a promise on completion.
 
