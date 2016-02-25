@@ -4,6 +4,58 @@ AKA, how to handle various common scenarios with Falcor and Angular.
 These recipes aren't authoritative, just the current state of my thinking on how to do this stuff.
 They'll likely evolve as time goes on.
 
+## Editing Data in a Form
+
+This only applies for scenarios where you're editing data and only saving it back to the datasource once the user presses save.
+
+Controller:
+
+```js
+function($scope, ngf) {
+  $scope.ngf = ngf;
+  $scope.startEdits = function() {
+    ngf.detach({
+      firstName: ['users', loggedInUserId, 'first_name'],
+      lastName: ['users', loggedInUserId, 'last_name'],
+      email: ['users', loggedInUserId, 'email']
+    })
+    .then(detached => $scope.editData = detached);
+  };
+  $scope.cancelEdits = function() {
+    delete $scope.editData;
+  };
+  $scope.saveEdits = function() {
+    return ngf.reattach($scope.editData);
+  };
+}
+```
+
+Template:
+
+```html
+<form ng-submit="saveEdits()">
+  <h2>User Info</h2>
+  <button ng-if="!editData" ng-click="startEdits()">Edit</button>
+  <button ng-if="editData" ng-click="cancelEdits()">Cancel Edits</button>
+  <button ng-if="editData" ng-click="saveEdits()">Save</button>
+  <p>
+    <strong>First Name:</strong>
+    <span ng-if="!editData">{{ngf('self', 'first_name')}}</span>
+    <span ng-if="editData"><input type="text" model="editData.firstName"></span>
+  </p>
+  <p>
+    <strong>Last Name:</strong>
+    <span ng-if="!editData">{{ngf('self', 'last_name')}}</span>
+    <span ng-if="editData"><input type="text" model="editData.lastName"></span>
+  </p>
+  <p>
+    <strong>Email:</strong>
+    <span ng-if="!editData">{{ngf('self', 'email')}}</span>
+    <span ng-if="editData"><input type="text" model="editData.email"></span>
+  </p>
+</form>
+```
+
 ## Detail Page
 
 A detail page displays a single item, such as a user, product, or post.
