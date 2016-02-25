@@ -1472,7 +1472,13 @@ function extractFromCache(obj, path) {
     var newPath = obj.value.concat(path.slice(idx));
     return extractFromCache(root, newPath);
   } else if (path.length - idx === 0) {
-    return obj && obj.$type ? obj.value : obj;
+    if (obj && obj.$type === 'error') {
+      return undefined;
+    } else if (obj && obj.$type) {
+      return obj.value;
+    } else {
+      return obj;
+    }
   } else if (obj === null || obj === undefined) {
     return obj;
   } else {

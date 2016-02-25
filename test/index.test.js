@@ -354,6 +354,15 @@ describe('ng-falcor', () => {
       .catch(done);
     });
 
+    it('should not return errors', () => {
+      const cache = {
+        foo: { $type: 'error', value: 'oops' }
+      };
+      const factory = create({ cache });
+      const ngf = factory($rootScope);
+      assert.strictEqual(ngf('foo'), undefined);
+    });
+
     describe('paging', () => {
 
       describe('stepping', () => {
