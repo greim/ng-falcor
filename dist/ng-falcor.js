@@ -152,10 +152,12 @@ function create() {
   function factory($rootScope) {
 
     // Called whenever model changes.
-    var refreshDepth = 0;
+    var paused = false;
     var onChange = function onChange() {
-      if (refreshDepth <= 0) {
+      if (!paused) {
         $rootScope.$evalAsync();
+      } else {
+        paused = false;
       }
     };
 
@@ -175,21 +177,14 @@ function create() {
       return noUndef(path) ? model.getValueSync(path) : undefined;
     };
 
-    ngf.refresh = function (pathSet) {
-      var t = arguments.length <= 1 || arguments[1] === undefined ? 1500 : arguments[1];
+    ngf.refresh = function () {
+      var _model, _model2;
 
-      refreshDepth++;
-      var stop = function stop() {
-        return refreshDepth--;
-      };
-      var timer = setTimeout(stop, t);
-      model.invalidate(pathSet);
-      var done = function done() {
-        stop();
-        clearTimeout(timer);
-        $rootScope.$evalAsync();
-      };
-      return model.get(pathSet).then(done, done).then(function () {});
+      paused = true;
+      (_model = model).invalidate.apply(_model, arguments);
+      (_model2 = model).get.apply(_model2, arguments).then(function (x) {
+        return x;
+      });
     };
 
     ngf.scope = function (scope) {
@@ -265,9 +260,9 @@ function create() {
       var destName = _arr$_i[1];
 
       ngf[destName] = function () {
-        var _model;
+        var _model3;
 
-        var result = (_model = model)[srcName].apply(_model, arguments);
+        var result = (_model3 = model)[srcName].apply(_model3, arguments);
         if (result && typeof result.then === 'function') {
           // Falcor model responses aren't true promises,
           // but the thing returned by then() is.
