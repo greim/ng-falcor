@@ -13,10 +13,12 @@ function create(origOpts = {}) {
   function factory($rootScope) {
 
     // Called whenever model changes.
-    let refreshDepth = 0;
+    let paused = false;
     const onChange = () => {
-      if (refreshDepth <= 0) {
+      if (!paused) {
         $rootScope.$evalAsync();
+      } else {
+        paused = false;
       }
     };
 
@@ -34,18 +36,10 @@ function create(origOpts = {}) {
         : undefined;
     };
 
-    ngf.refresh = function(pathSet, t = 1500) {
-      refreshDepth++;
-      const stop = () => refreshDepth--;
-      const timer = setTimeout(stop, t);
-      model.invalidate(pathSet);
-      const done = () => {
-        stop();
-        clearTimeout(timer);
-        $rootScope.$evalAsync();
-      };
-      return model.get(pathSet).then(done, done)
-      .then(() => {});
+    ngf.refresh = function(...pathSets) {
+      paused = true;
+      model.invalidate(...pathSets);
+      model.get(...pathSets).then(x => x);
     };
 
     ngf.scope = function(scope) {
