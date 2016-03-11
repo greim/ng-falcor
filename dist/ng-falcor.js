@@ -178,13 +178,10 @@ function create() {
     };
 
     ngf.refresh = function () {
-      var _model, _model2;
+      var _model;
 
       paused = true;
       (_model = model).invalidate.apply(_model, arguments);
-      (_model2 = model).get.apply(_model2, arguments).then(function (x) {
-        return x;
-      });
     };
 
     ngf.scope = function (scope) {
@@ -260,9 +257,9 @@ function create() {
       var destName = _arr$_i[1];
 
       ngf[destName] = function () {
-        var _model3;
+        var _model2;
 
-        var result = (_model3 = model)[srcName].apply(_model3, arguments);
+        var result = (_model2 = model)[srcName].apply(_model2, arguments);
         if (result && typeof result.then === 'function') {
           // Falcor model responses aren't true promises,
           // but the thing returned by then() is.
