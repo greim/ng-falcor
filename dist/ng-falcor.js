@@ -152,8 +152,11 @@ function create() {
   function factory($rootScope) {
 
     // Called whenever model changes.
+    var refreshDepth = 0;
     var onChange = function onChange() {
-      $rootScope.$evalAsync();
+      if (refreshDepth <= 0) {
+        $rootScope.$evalAsync();
+      }
     };
 
     // Central cache of data shared by all ngf consumers.
@@ -170,6 +173,23 @@ function create() {
 
       path = pathify(path);
       return noUndef(path) ? model.getValueSync(path) : undefined;
+    };
+
+    ngf.refresh = function (pathSet) {
+      var t = arguments.length <= 1 || arguments[1] === undefined ? 1500 : arguments[1];
+
+      refreshDepth++;
+      var stop = function stop() {
+        return refreshDepth--;
+      };
+      var timer = setTimeout(stop, t);
+      model.invalidate(pathSet);
+      var done = function done() {
+        stop();
+        clearTimeout(timer);
+        $rootScope.$evalAsync();
+      };
+      return model.get(pathSet).then(done, done).then(function () {});
     };
 
     ngf.scope = function (scope) {

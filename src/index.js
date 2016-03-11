@@ -13,7 +13,12 @@ function create(origOpts = {}) {
   function factory($rootScope) {
 
     // Called whenever model changes.
-    const onChange = () => { $rootScope.$evalAsync(); };
+    let refreshDepth = 0;
+    const onChange = () => {
+      if (refreshDepth <= 0) {
+        $rootScope.$evalAsync();
+      }
+    };
 
     // Central cache of data shared by all ngf consumers.
     let model;
@@ -27,6 +32,20 @@ function create(origOpts = {}) {
       return noUndef(path)
         ? model.getValueSync(path)
         : undefined;
+    };
+
+    ngf.refresh = function(pathSet, t = 1500) {
+      refreshDepth++;
+      const stop = () => refreshDepth--;
+      const timer = setTimeout(stop, t);
+      model.invalidate(pathSet);
+      const done = () => {
+        stop();
+        clearTimeout(timer);
+        $rootScope.$evalAsync();
+      };
+      return model.get(pathSet).then(done, done)
+      .then(() => {});
     };
 
     ngf.scope = function(scope) {
