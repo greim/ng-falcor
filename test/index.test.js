@@ -453,7 +453,8 @@ describe('ng-falcor', () => {
           assert.strictEqual(ngf('foo'), 'xyz');
           callCount++;
         };
-        return ngf.refresh(['foo']).then(() => {
+        ngf.refresh(['foo']);
+        return ngf.get(['foo']).then(() => {
           assert.strictEqual(callCount, 1);
         });
       });

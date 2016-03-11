@@ -39,7 +39,6 @@ function create(origOpts = {}) {
     ngf.refresh = function(...pathSets) {
       paused = true;
       model.invalidate(...pathSets);
-      model.get(...pathSets).then(x => x);
     };
 
     ngf.scope = function(scope) {
