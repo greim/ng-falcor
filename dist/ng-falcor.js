@@ -152,13 +152,8 @@ function create() {
   function factory($rootScope) {
 
     // Called whenever model changes.
-    var paused = false;
     var onChange = function onChange() {
-      if (!paused) {
-        $rootScope.$evalAsync();
-      } else {
-        paused = false;
-      }
+      $rootScope.$evalAsync();
     };
 
     // Central cache of data shared by all ngf consumers.
@@ -175,13 +170,6 @@ function create() {
 
       path = pathify(path);
       return noUndef(path) ? model.getValueSync(path) : undefined;
-    };
-
-    ngf.refresh = function () {
-      var _model;
-
-      paused = true;
-      (_model = model).invalidate.apply(_model, arguments);
     };
 
     ngf.scope = function (scope) {
@@ -257,9 +245,9 @@ function create() {
       var destName = _arr$_i[1];
 
       ngf[destName] = function () {
-        var _model2;
+        var _model;
 
-        var result = (_model2 = model)[srcName].apply(_model2, arguments);
+        var result = (_model = model)[srcName].apply(_model, arguments);
         if (result && typeof result.then === 'function') {
           // Falcor model responses aren't true promises,
           // but the thing returned by then() is.

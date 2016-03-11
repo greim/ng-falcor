@@ -436,29 +436,6 @@ describe('ng-falcor', () => {
         });
       });
     });
-
-    describe('refresh', () => {
-
-      it('should refresh', () => {
-        let callCount = 0;
-        const fakeModel = new Model({cache:{foo:'xyz'}});
-        var $fakeRootScope = { $evalAsync() {} };
-        const factory = create({
-          cache: { foo: 'abc' },
-          source: fakeModel.asDataSource()
-        });
-        const ngf = factory($fakeRootScope);
-        assert.strictEqual(ngf('foo'), 'abc');
-        $fakeRootScope.$evalAsync = function() {
-          assert.strictEqual(ngf('foo'), 'xyz');
-          callCount++;
-        };
-        ngf.refresh(['foo']);
-        return ngf.get(['foo']).then(() => {
-          assert.strictEqual(callCount, 1);
-        });
-      });
-    });
   });
 
   describe('two-way binding', () => {

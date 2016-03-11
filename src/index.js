@@ -13,14 +13,7 @@ function create(origOpts = {}) {
   function factory($rootScope) {
 
     // Called whenever model changes.
-    let paused = false;
-    const onChange = () => {
-      if (!paused) {
-        $rootScope.$evalAsync();
-      } else {
-        paused = false;
-      }
-    };
+    const onChange = () => { $rootScope.$evalAsync(); };
 
     // Central cache of data shared by all ngf consumers.
     let model;
@@ -34,11 +27,6 @@ function create(origOpts = {}) {
       return noUndef(path)
         ? model.getValueSync(path)
         : undefined;
-    };
-
-    ngf.refresh = function(...pathSets) {
-      paused = true;
-      model.invalidate(...pathSets);
     };
 
     ngf.scope = function(scope) {
