@@ -6,6 +6,7 @@ import HttpDataSource from 'falcor-http-datasource';
 import detach from './detach';
 import steppingPager from './stepping-pager';
 import increasingPager from './increasing-pager';
+import assign from 'object-assign';
 
 function create(origOpts = {}) {
 
@@ -41,7 +42,7 @@ function create(origOpts = {}) {
     ngf.reconfigure = function(newOpts = {}) {
       const opts = ngf._config;
       const headers = newOpts.headers === undefined || newOpts.headers
-        ? Object.assign({}, opts.headers, newOpts.headers)
+        ? assign({}, opts.headers, newOpts.headers)
         : undefined;
       const cache = newOpts.cache || undefined;
       let router, timeout, source;

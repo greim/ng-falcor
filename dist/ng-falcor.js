@@ -139,6 +139,10 @@ var _increasingPager = require('./increasing-pager');
 
 var _increasingPager2 = _interopRequireDefault(_increasingPager);
 
+var _objectAssign = require('object-assign');
+
+var _objectAssign2 = _interopRequireDefault(_objectAssign);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function create() {
@@ -186,7 +190,7 @@ function create() {
       var newOpts = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
       var opts = ngf._config;
-      var headers = newOpts.headers === undefined || newOpts.headers ? Object.assign({}, opts.headers, newOpts.headers) : undefined;
+      var headers = newOpts.headers === undefined || newOpts.headers ? (0, _objectAssign2.default)({}, opts.headers, newOpts.headers) : undefined;
       var cache = newOpts.cache || undefined;
       var router = undefined,
           timeout = undefined,
@@ -332,7 +336,7 @@ function noUndef(path) {
 }
 
 module.exports = { create: create };
-},{"./detach":1,"./increasing-pager":2,"./stepping-pager":4,"falcor":53,"falcor-http-datasource":5,"falcor-sync-model":21}],4:[function(require,module,exports){
+},{"./detach":1,"./increasing-pager":2,"./stepping-pager":4,"falcor":53,"falcor-http-datasource":5,"falcor-sync-model":21,"object-assign":152}],4:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -8533,5 +8537,46 @@ Promise.prototype.nodeify = function (callback, ctx) {
   });
 }
 
-},{"./core.js":146,"asap":133}]},{},[3])(3)
+},{"./core.js":146,"asap":133}],152:[function(require,module,exports){
+/* eslint-disable no-unused-vars */
+'use strict';
+var hasOwnProperty = Object.prototype.hasOwnProperty;
+var propIsEnumerable = Object.prototype.propertyIsEnumerable;
+
+function toObject(val) {
+	if (val === null || val === undefined) {
+		throw new TypeError('Object.assign cannot be called with null or undefined');
+	}
+
+	return Object(val);
+}
+
+module.exports = Object.assign || function (target, source) {
+	var from;
+	var to = toObject(target);
+	var symbols;
+
+	for (var s = 1; s < arguments.length; s++) {
+		from = Object(arguments[s]);
+
+		for (var key in from) {
+			if (hasOwnProperty.call(from, key)) {
+				to[key] = from[key];
+			}
+		}
+
+		if (Object.getOwnPropertySymbols) {
+			symbols = Object.getOwnPropertySymbols(from);
+			for (var i = 0; i < symbols.length; i++) {
+				if (propIsEnumerable.call(from, symbols[i])) {
+					to[symbols[i]] = from[symbols[i]];
+				}
+			}
+		}
+	}
+
+	return to;
+};
+
+},{}]},{},[3])(3)
 });
