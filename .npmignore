@@ -1,6 +1,7 @@
 /test/
 /src/
 /bin/
+/recipes/
 .gitignore
 .eslintrc
 .babelrc

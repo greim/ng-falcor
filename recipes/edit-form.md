@@ -2,23 +2,45 @@
 
 Suppose you want to display a subset of your JSON graph in a form, which you can edit. When you press the "save" button, all of that data is saved back through Falcor in one operation.
 
+In this example we have a "my profile" edit form.
+
+JSON Graph:
+
+```
+.
+|--self (reference to ['users', :id])
+|--users
+| `--:id
+|     |--avatar (reference to ['media', :id])
+|     |--first_name
+|     |--last_name
+|     `--email
+`--media
+   `--:id
+       `--src
+```
+
 Controller:
 
 ```js
 function($scope, ngf) {
+
   $scope.ngf = ngf;
-  $scope.startEdits = function() {
-    ngf.detach({
-      firstName: ['users', loggedInUserId, 'first_name'],
-      lastName: ['users', loggedInUserId, 'last_name'],
-      email: ['users', loggedInUserId, 'email']
-    }).then(edits => $scope.edits = edits);
-  };
-  $scope.cancelEdits = function() {
+
+  ngf.detach({
+    firstName: ['self', 'first_name'],
+    lastName: ['self', 'last_name'],
+    email: ['self', 'email'],
+    avatar: ['self', 'avatar', 'src'],
+  }).then(edits => $scope.edits = edits);
+
+  $scope.cancel = function() {
     delete $scope.edits;
   };
-  $scope.saveEdits = function() {
+
+  $scope.save = function() {
     return ngf.reattach($scope.edits);
+    delete $scope.edits;
   };
 }
 ```
@@ -26,25 +48,13 @@ function($scope, ngf) {
 Template:
 
 ```html
-<form ng-submit="saveEdits()">
+<form ng-submit="save()">
   <h2>User Info</h2>
-  <button ng-if="!edits" ng-click="startEdits()">Edit</button>
-  <button ng-if="edits" ng-click="cancelEdits()">Cancel</button>
-  <button ng-if="edits" ng-click="saveEdits()">Save</button>
-  <p>
-    <strong>First Name:</strong>
-    <span ng-if="!edits">{{ngf('self', 'first_name')}}</span>
-    <span ng-if="edits"><input type="text" model="edits.firstName"></span>
-  </p>
-  <p>
-    <strong>Last Name:</strong>
-    <span ng-if="!edits">{{ngf('self', 'last_name')}}</span>
-    <span ng-if="edits"><input type="text" model="edits.lastName"></span>
-  </p>
-  <p>
-    <strong>Email:</strong>
-    <span ng-if="!edits">{{ngf('self', 'email')}}</span>
-    <span ng-if="edits"><input type="text" model="edits.email"></span>
-  </p>
+  First Name: <input type="text" model="edits.firstName"><br/>
+  Last Name: <input type="text" model="edits.lastName"><br/>
+  Email: <input type="text" model="edits.email"><br/>
+  Avatar: <input type="text" model="edits.avatar"><br/>
+  <button ng-if="edits" ng-click="cancel()">Cancel</button>
+  <button ng-if="edits">Save</button>
 </form>
 ```

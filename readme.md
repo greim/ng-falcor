@@ -69,7 +69,7 @@ A stepping pager supports the traditional paging scenario. It's an object gotten
  * `pager.hasNext(total)` - Is there a next page? This method needs to know the total number of things in the list in order to work.
  * `pager.indices()` - Return an array of numbers representing the current page of items being viewed. This array can be passed to `ng-repeat` and each number can then be used as an index into your Falcor list.
 
-#### Iteration mode 2: increasing pagers
+#### Iteration mode 3: increasing pagers
 
 An increasing pager supports the infinite scrolling scenario. It's an object gotten by calling `ngf.increaser(size)`, where `size` is the number of things to increase by each time. See the **recipes** section for examples. An increasing pager has these methods:
 
