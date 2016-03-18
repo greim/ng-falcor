@@ -289,6 +289,8 @@ function create() {
         for (var j = lo; j >= hi; j--) {
           result.push(j);
         }
+      } else {
+        result.push(lo);
       }
       return result;
     };
