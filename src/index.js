@@ -110,6 +110,8 @@ function create(origOpts = {}) {
         for (let i=lo; i<=hi; i++) { result.push(i); }
       } else if (hi < lo) {
         for (let j=lo; j>=hi; j--) { result.push(j); }
+      } else {
+        result.push(lo);
       }
       return result;
     };
