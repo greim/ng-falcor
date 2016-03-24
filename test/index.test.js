@@ -253,6 +253,20 @@ describe('ng-falcor', () => {
       assert.deepEqual(range, [13,12,11,10]);
     });
 
+    it('should create a one-length range', () => {
+      const factory = create();
+      const ngf = factory($rootScope);
+      const range = ngf.range(0,0);
+      assert.deepEqual(range, [0]);
+    });
+
+    it('should create a non-zero one-length range', () => {
+      const factory = create();
+      const ngf = factory($rootScope);
+      const range = ngf.range(1,1);
+      assert.deepEqual(range, [1]);
+    });
+
     it('should scope', () => {
       const cache = {
         users: {
