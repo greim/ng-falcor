@@ -18,6 +18,9 @@ export default function increasingPager(stepSize) {
         result.push(i);
       }
       return result;
+    },
+    pageSize() {
+      return stepSize;
     }
   });
 }

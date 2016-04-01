@@ -165,17 +165,17 @@ describe('ng-falcor', () => {
 
     it('should not dupe calls to data source', async function() {
       let count = 0;
-      const model = new Model({
-        cache: { a: 'b' }
-      });
+      const cache = { a: 'b' };
+      const model = new Model({ cache });
       const source = model.asDataSource();
-      source.call = function() {
+      const oldGet = source.get;
+      source.get = function() {
         count++;
-        return model.get('a'); // just need to return a modelresponse here.
+        return oldGet.apply(this, arguments);
       };
       const factory = create({ source });
       const ngf = factory($rootScope);
-      const prom = ngf.callModel('foo', ['a'], [], []);
+      const prom = ngf.get(['foo']);
       await prom;
       await prom;
       assert.strictEqual(count, 1);
@@ -426,6 +426,13 @@ describe('ng-falcor', () => {
           assert.strictEqual(stepper.hasPrev(), false);
           assert.deepEqual(stepper.indices(), [0,1,2]);
         });
+
+        it('should reveal page size', () => {
+          const factory = create({});
+          const ngf = factory($rootScope);
+          const stepper = ngf.stepper(3);
+          assert.strictEqual(stepper.pageSize(), 3);
+        });
       });
 
       describe('increasing', () => {
@@ -447,6 +454,13 @@ describe('ng-falcor', () => {
           assert.strictEqual(increaser.hasMore(6), false);
           assert.strictEqual(increaser.hasMore(7), true);
           assert.deepEqual(increaser.indices(), [0,1,2,3,4,5]);
+        });
+
+        it('should reveal page size', () => {
+          const factory = create({});
+          const ngf = factory($rootScope);
+          const increaser = ngf.increaser(3);
+          assert.strictEqual(increaser.pageSize(), 3);
         });
       });
     });
