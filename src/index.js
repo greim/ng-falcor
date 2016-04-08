@@ -4,6 +4,7 @@ import SyncModel from 'falcor-sync-model';
 import falcor from 'falcor';
 import HttpDataSource from 'falcor-http-datasource';
 import detach from './detach';
+import objectify from './objectify';
 import steppingPager from './stepping-pager';
 import increasingPager from './increasing-pager';
 import assign from 'object-assign';
@@ -122,6 +123,10 @@ function create(origOpts = {}) {
 
     ngf.reattach = function(data) {
       return data._save();
+    };
+
+    ngf.object = function(template) {
+      return objectify(model, template);
     };
 
     ngf.stepper = steppingPager;

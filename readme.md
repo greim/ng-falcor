@@ -50,6 +50,7 @@ It has several methods:
  * `ngf.scope(rootPath)` - Returns a function that behaves just like `ngf(path)`, except `rootPath` is prepended to `path`. `rootPath` can also be a function that returns a path.
  * `ngf.detach(template)` - Creates a detached object containing data from the Falcor model based on the given `template`. The template object is keyed/valued by names/paths. Returns a promise for an object matching the templates, with values resolved from Falcor based on corresponding paths. This object can then be mutated arbitrarily. See also `ngf.attach()` below.
  * `ngf.reattach(detached)` - Takes an object returned from `ngf.detach()` (see above) and reattaches it to the model, calling set on the model as necessary. Presumably, the values of this object will have been mutated in some way. Returns a promise on completion.
+ * `ngf.object(template)` - Similar to detach, but synchronously returns an object whose keys are getters/setters to the falcor model. Handy for when one of your directives simply must have an object rather than referencing graph leaves.
 
 ### Iteration helpers
 

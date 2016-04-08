@@ -1,6 +1,6 @@
 {
   "name": "ng-falcor",
-  "version": "0.8.7",
+  "version": "0.8.8",
   "description": "Use Falcor in Angular 1.x Projects",
   "main": "lib/index.js",
   "dependencies": {

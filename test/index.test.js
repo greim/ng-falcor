@@ -330,42 +330,96 @@ describe('ng-falcor', () => {
       assert.strictEqual(typeof ngf.error, 'function');
     });
 
-    it('should detach', done => {
-      const cache = { foo: 1, bar: { baz: 2 }, qux: 3 };
-      const factory = create({ cache });
-      const ngf = factory($rootScope);
-      ngf.detach({
-        foo: ['foo'],
-        baz: ['bar', 'baz'],
-        qux: ['qux']
-      })
-      .then(detached => {
-        assert.deepEqual(detached, { foo: 1, baz: 2, qux: 3 });
-        done();
-      })
-      .catch(done);
+    describe('detach()', function() {
+
+      it('should detach', done => {
+        const cache = { foo: 1, bar: { baz: 2 }, qux: 3 };
+        const factory = create({ cache });
+        const ngf = factory($rootScope);
+        ngf.detach({
+          foo: ['foo'],
+          baz: ['bar', 'baz'],
+          qux: ['qux']
+        })
+        .then(detached => {
+          assert.deepEqual(detached, { foo: 1, baz: 2, qux: 3 });
+          done();
+        })
+        .catch(done);
+      });
+
+      it('should reattach', done => {
+        const cache = { foo: 1, bar: { baz: 2 }, qux: 3 };
+        const factory = create({ cache });
+        const ngf = factory($rootScope);
+        ngf.detach({
+          foo: ['foo'],
+          baz: ['bar', 'baz'],
+          qux: ['qux']
+        })
+        .then(detached => {
+          detached.foo = 123;
+          return ngf.reattach(detached);
+        })
+        .then(() => {
+          assert.strictEqual(ngf('foo'), 123);
+          assert.strictEqual(ngf('bar', 'baz'), 2);
+          assert.strictEqual(ngf('qux'), 3);
+          done();
+        })
+        .catch(done);
+      });
     });
 
-    it('should reattach', done => {
-      const cache = { foo: 1, bar: { baz: 2 }, qux: 3 };
-      const factory = create({ cache });
-      const ngf = factory($rootScope);
-      ngf.detach({
-        foo: ['foo'],
-        baz: ['bar', 'baz'],
-        qux: ['qux']
-      })
-      .then(detached => {
-        detached.foo = 123;
-        return ngf.reattach(detached);
-      })
-      .then(() => {
-        assert.strictEqual(ngf('foo'), 123);
-        assert.strictEqual(ngf('bar', 'baz'), 2);
-        assert.strictEqual(ngf('qux'), 3);
-        done();
-      })
-      .catch(done);
+    describe('object()', function() {
+
+      it('getters should work', () => {
+        const cache = { foo: 1, bar: { baz: 2 }, qux: 3 };
+        const factory = create({ cache });
+        const ngf = factory($rootScope);
+        const obj = ngf.object({
+          foo: ['foo'],
+          baz: ['bar', 'baz'],
+          qux: ['qux']
+        });
+        assert.strictEqual(obj.foo, 1);
+        assert.strictEqual(obj.baz, 2);
+        assert.strictEqual(obj.qux, 3);
+      });
+
+      it('setters should work', () => {
+        const cache = { foo: 1, bar: { baz: 2 }, qux: 3 };
+        const factory = create({ cache });
+        const ngf = factory($rootScope);
+        const obj = ngf.object({
+          foo: ['foo'],
+          baz: ['bar', 'baz'],
+          qux: ['qux']
+        });
+        obj.foo = 'a';
+        obj.baz = 'b';
+        obj.qux = 'c';
+        assert.strictEqual(obj.foo, 'a');
+        assert.strictEqual(obj.baz, 'b');
+        assert.strictEqual(obj.qux, 'c');
+      });
+
+      it('setters should propagate back to ngf', () => {
+        const cache = { foo: 1, bar: { baz: 2 }, qux: 3 };
+        const factory = create({ cache });
+        const ngf = factory($rootScope);
+        const obj = ngf.object({
+          foo: ['foo'],
+          baz: ['bar', 'baz'],
+          qux: ['qux']
+        });
+        obj.foo = 'a';
+        obj.baz = 'b';
+        obj.qux = 'c';
+        assert.strictEqual(ngf('foo'), 'a');
+        assert.strictEqual(ngf('bar', 'baz'), 'b');
+        assert.strictEqual(ngf('qux'), 'c');
+      });
     });
 
     it('should not return errors', () => {
