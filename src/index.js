@@ -65,6 +65,17 @@ function create(origOpts = {}) {
       }
       ngf._config._source = source;
       model = new SyncModel({ source, onChange, cache }).batch();
+
+      if(source.onPushNotifications) {
+        source.onPushNotifications((data) => {
+          let cache = model.withoutDataSource().set(data);
+          cache.then(() => {
+            cache.model.invalidate();
+            onChange();
+          });
+        });
+      }
+
       $rootScope.$evalAsync();
     };
 
