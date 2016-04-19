@@ -230,6 +230,7 @@ function create() {
       var headers = _ref.headers;
       var cache = _ref.cache;
 
+      //if(headers === undefined) headers = {};
       ngf._config = arguments[0];
       delete ngf._config.cache;
       if (!source && router) {

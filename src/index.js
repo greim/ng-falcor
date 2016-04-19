@@ -58,7 +58,7 @@ function create(origOpts = {}) {
     };
 
     ngf.configure = function({ source, router, timeout, headers, cache } = {}) {
-      if(headers === undefined) headers = {};
+      //if(headers === undefined) headers = {};
       ngf._config = arguments[0];
       delete ngf._config.cache;
       if (!source && router) {
