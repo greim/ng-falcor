@@ -71,6 +71,16 @@ function create(origOpts = {}) {
 
     ngf.configure(origOpts);
 
+    ngf.pushDataChangesToCache = function(data) {
+      if(data) {
+        let cacheResponse = model.withoutDataSource().set(data);
+        cacheResponse.then(() => {
+          cacheResponse.model.invalidate();
+          onChange();
+        });
+      }
+    };
+
     // proxy the model on this object
     for (const [ srcName, destName ] of [
       [ 'get', 'get' ],
