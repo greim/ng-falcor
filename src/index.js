@@ -46,18 +46,20 @@ function create(origOpts = {}) {
         ? assign({}, opts.headers, newOpts.headers)
         : undefined;
       const cache = newOpts.cache || undefined;
-      let router, timeout, source;
+      let router, timeout, source, errorSelector;
       if (newOpts.router !== undefined) { router = router || undefined; }
       else { router = opts.router; }
       if (newOpts.timeout !== undefined) { timeout = timeout || undefined; }
       else { timeout = opts.timeout; }
       if (newOpts.source !== undefined) { source = source || undefined; }
       else { source = opts.source; }
-      const finalOpts = { headers, cache, router, timeout, source };
+      if (newOpts.errorSelector !== undefined) { errorSelector = errorSelector || undefined; }
+      else { errorSelector = opts.errorSelector; }
+      const finalOpts = { headers, cache, router, timeout, source, errorSelector };
       ngf.configure(finalOpts);
     };
 
-    ngf.configure = function({ source, router, timeout, headers, cache } = {}) {
+    ngf.configure = function({ source, router, timeout, headers, cache, errorSelector } = {}) {
       //if(headers === undefined) headers = {};
       ngf._config = arguments[0];
       delete ngf._config.cache;
@@ -65,7 +67,7 @@ function create(origOpts = {}) {
         source = new HttpDataSource(router, { timeout, headers });
       }
       ngf._config._source = source;
-      model = new SyncModel({ source, onChange, cache }).batch();
+      model = new SyncModel({ source, onChange, cache, errorSelector }).batch();
       $rootScope.$evalAsync();
     };
 
