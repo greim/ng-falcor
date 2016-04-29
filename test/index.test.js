@@ -219,11 +219,11 @@ describe('ng-falcor', () => {
       assert.strictEqual(ngf._config.router, undefined);
     });
 
-    it('should reconfigure headers set null', () => {
+    it('should reconfigure headers set empty', () => {
       const factory = create({ headers: { foo: 'bar' } });
       const ngf = factory($rootScope);
       ngf.reconfigure({ headers: null });
-      assert.strictEqual(ngf._config.headers, undefined);
+      assert.deepEqual(ngf._config.headers, {});
     });
 
     it('should not keep ref to cache', () => {
