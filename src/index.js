@@ -42,32 +42,22 @@ function create(origOpts = {}) {
 
     ngf.reconfigure = function(newOpts = {}) {
       const opts = ngf._config;
-      const headers = newOpts.headers === undefined || newOpts.headers
-        ? assign({}, opts.headers, newOpts.headers)
-        : undefined;
-      const cache = newOpts.cache || undefined;
-      let router, timeout, source, errorSelector;
-      if (newOpts.router !== undefined) { router = router || undefined; }
-      else { router = opts.router; }
-      if (newOpts.timeout !== undefined) { timeout = timeout || undefined; }
-      else { timeout = opts.timeout; }
-      if (newOpts.source !== undefined) { source = source || undefined; }
-      else { source = opts.source; }
-      if (newOpts.errorSelector !== undefined) { errorSelector = errorSelector || undefined; }
-      else { errorSelector = opts.errorSelector; }
-      const finalOpts = { headers, cache, router, timeout, source, errorSelector };
+      const finalOpts = removeUndef(assign({}, opts, newOpts));
+      finalOpts.cache = newOpts.cache || undefined;
+      finalOpts.headers = newOpts.headers === undefined || newOpts.headers
+          ? assign({}, opts.headers, newOpts.headers)
+          : {};
       ngf.configure(finalOpts);
     };
 
-    ngf.configure = function({ source, router, timeout, headers, cache, errorSelector } = {}) {
-      //if(headers === undefined) headers = {};
-      ngf._config = arguments[0];
+    ngf.configure = function({ source, router, timeout, headers, cache, maxSize, collectRatio, comparator, errorSelector } = {}) {
+      ngf._config = removeUndef(arguments[0]);
       delete ngf._config.cache;
       if (!source && router) {
-        source = new HttpDataSource(router, { timeout, headers });
+        source = new HttpDataSource(router, removeUndef({ timeout, headers }));
       }
       ngf._config._source = source;
-      model = new SyncModel({ source, onChange, cache, errorSelector }).batch();
+      model = new SyncModel(removeUndef({ source, onChange, cache, maxSize, collectRatio, comparator, errorSelector })).batch();
       $rootScope.$evalAsync();
     };
 
@@ -164,6 +154,11 @@ function noUndef(path) {
     }
   }
   return true;
+}
+
+function removeUndef(o) {
+  Object.keys(o).forEach(function(i) { if(o[i] === undefined || o[i] === null) delete o[i]; });
+  return o;
 }
 
 module.exports = { create };
