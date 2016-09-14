@@ -136,6 +136,10 @@ function create(origOpts = {}) {
     ngf.atom = falcor.Model.atom;
     ngf.error = falcor.Model.error;
 
+    ngf.rawModel = function() {
+      return model;
+    };
+
     // All done.
     return ngf;
   }
