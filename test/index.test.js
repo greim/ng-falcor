@@ -52,6 +52,21 @@ describe('ng-falcor', () => {
       assert.strictEqual(typeof ngf, 'function');
     });
 
+    it('rawModel should be a function', () => {
+      const factory = create({});
+      const ngf = factory($rootScope);
+      assert.strictEqual(typeof ngf.rawModel, 'function');
+    });
+
+    it('rawModel should return a Falcor model', () => {
+      const factory = create({});
+      const ngf = factory($rootScope);
+      const rawModel = ngf.rawModel();
+      assert.ok(rawModel instanceof Model, 'is an instance of a Falcor Model');
+      assert.strictEqual(typeof rawModel.get, 'function', 'has a get method');
+      assert.strictEqual(typeof rawModel.set, 'function', 'has a set method');
+    });
+
     it('getValue should be a function', () => {
       const factory = create({});
       const ngf = factory($rootScope);
