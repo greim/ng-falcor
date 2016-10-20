@@ -14,7 +14,12 @@ function create(origOpts = {}) {
   function factory($rootScope) {
 
     // Called whenever model changes.
-    const onChange = () => { $rootScope.$evalAsync(); };
+    const onChange = () => {
+      if(typeof origOpts.onChange === 'function') {
+        origOpts.onChange();
+      }
+      $rootScope.$evalAsync();
+    };
 
     // Central cache of data shared by all ngf consumers.
     let model;

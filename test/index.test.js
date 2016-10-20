@@ -29,6 +29,17 @@ describe('ng-falcor', () => {
     it('should create', () => {
       create({});
     });
+
+    it('should create with onChange option', () => {
+      let handled = false;
+      const handleChange = () => {
+        handled = true;
+      };
+      const factory = create({onChange: handleChange});
+      const ngf = factory($rootScope);
+      ngf.rawModel()._root.onChange();
+      assert.strictEqual(handled, true);
+    });
   });
 
   describe('factory', () => {
