@@ -153,13 +153,16 @@ var _objectAssign2 = _interopRequireDefault(_objectAssign);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function create() {
-  var origOpts = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+  var origOpts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
 
   function factory($rootScope) {
 
     // Called whenever model changes.
     var onChange = function onChange() {
+      if (typeof origOpts.onChange === 'function') {
+        origOpts.onChange();
+      }
       $rootScope.$evalAsync();
     };
 
@@ -194,7 +197,7 @@ function create() {
     };
 
     ngf.reconfigure = function () {
-      var newOpts = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+      var newOpts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
       var opts = ngf._config;
       var headers = newOpts.headers === undefined || newOpts.headers ? (0, _objectAssign2.default)({}, opts.headers, newOpts.headers) : undefined;
@@ -222,7 +225,7 @@ function create() {
     };
 
     ngf.configure = function () {
-      var _ref = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+      var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
       var source = _ref.source;
       var router = _ref.router;
