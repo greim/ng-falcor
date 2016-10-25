@@ -31,6 +31,7 @@ Pass it an options hash:
  * **headers** (object) An object containing HTTP request headers. If provided, the falcor HttpDatasource will send these headers along with every request. Only use in conjunction with `router`.
  * **timeout** (number) If provided, falcor HttpDatasource requests will timeout after this many milliseconds. Only use in conjunction with `router`.
  * **cache** (object) Pre-populate the model cache. Useful for bootstrapping data for example.
+ * **onChange** (function) Alias to [`onChange`](https://netflix.github.io/falcor/doc/Model.html#~onChange) on the internal Falcor model.
 
 ### `ngf`
 
